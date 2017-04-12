@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="horizontal"
+              android:paddingLeft="@dimen/activity_horizontal_margin"
+              android:paddingRight="@dimen/activity_horizontal_margin">
+
+    <ImageView
+        android:layout_gravity="start"
+        android:id="@+id/imageView"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        app:srcCompat="@mipmap/ic_launcher"/>
+
+    <TextView
+        android:layout_margin="@dimen/activity_vertical_margin"
+        android:layout_gravity="center"
+        tools:text="TextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/textView"
+        android:layout_weight="1"/>
+
+    <ImageButton
+        android:layout_gravity="end|center_vertical"
+        android:id="@+id/imageClose"
+        android:padding="16dp"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        app:srcCompat="@drawable/ic_close"
+        style="@style/Widget.AppCompat.ImageButton"/>
+</LinearLayout>

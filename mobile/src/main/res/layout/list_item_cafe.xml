@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="place"
+            type="com.devjn.kotlinmap.utils.PlacePoint"/>
+    </data>
+
+    <FrameLayout
+        android:id="@+id/root"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/list_cafe_size"
+        android:paddingLeft="@dimen/activity_vertical_margin"
+        android:paddingRight="@dimen/activity_vertical_margin"
+        android:background="?android:attr/selectableItemBackground"
+        tools:context="com.devjn.kotlinmap.MainActivity"
+        tools:showIn="@layout/fragment_list_bottomsheet">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="@dimen/photo_place_margin"
+            android:layout_marginRight="@dimen/photo_place_margin"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_marginTop="@dimen/material_padding_8dp"
+                android:id="@+id/textName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:text="@{place.name}"
+                tools:text="Some Restaurant"/>
+
+            <RatingBar
+                android:id="@+id/ratingBar"
+                style="@style/Widget.AppCompat.RatingBar.Small"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="3"
+                android:numStars="5"
+                tools:rating="3.7"
+                android:rating="@{place.rating > 0 ? place.rating : 3}"/>
+
+            <TextView
+                android:layout_marginTop="@dimen/material_padding_8dp"
+                android:id="@+id/description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                android:text="@{place.description ?? @string/description}"
+                tools:text="Cafe"/>
+
+            <TextView
+                android:layout_marginTop="@dimen/material_padding_8dp"
+                android:id="@+id/textView5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@{place.description ?? @string/description}"
+                tools:text="Open until"/>
+        </LinearLayout>
+
+        <ImageView
+            android:layout_margin="@dimen/material_padding_8dp"
+            android:layout_gravity="center_vertical|end"
+            android:layout_width="54dp"
+            android:layout_height="wrap_content"
+            app:imageUrlSample="@{place.image}"
+            tools:src="@android:drawable/sym_def_app_icon"
+            android:id="@+id/icon"/>
+    </FrameLayout>
+
+    <!-- Сюда добавляем свой layout -->
+
+</layout>

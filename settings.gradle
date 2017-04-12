@@ -1,0 +1,10 @@
+//def configureGradleScriptKotlinOn(ProjectDescriptor project) {
+//    project.buildFileName = 'build.gradle.kts'
+//    project.children.each { configureGradleScriptKotlinOn(it) }
+//}
+
+//rootProject.buildFileName = 'build.gradle.kts'
+
+include ':mobile'
+//
+//configureGradleScriptKotlinOn rootProject

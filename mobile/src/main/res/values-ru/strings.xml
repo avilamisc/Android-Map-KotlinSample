@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="search">Search</string>
+    <string name="action_report">New location</string>
+    <string name="title_report">Reporting</string>
+    <string name="action_share_report">Share map location</string>
+
+  
+    <string name="enable_location">Включите геолокацию</string>
+    <string name="wait_location">Please wait till location will be more accurate</string>
+    <string name="location_recieved">Местоположение получено %1$f %2$f</string>
+    <string name="no_image">The image is not set</string>
+    <string name="no_location">Location is not provided</string>
+    <string name="rating">Рейтинг</string>
+
+    <string name="description">Описание</string>
+    <string name="restaurant">Restaurant</string>
+    <string name="images">Images</string>
+    <string name="add_image">Add image</string>
+    <string name="select_take_picture">Сделайте или выберети фото</string>
+    <string name="location_not_define">Местоположение не определено</string>
+</resources>
