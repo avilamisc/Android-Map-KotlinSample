@@ -7,6 +7,7 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="list_cafe_size">104dp</dimen>
+    <dimen name="max_list_cafe_size">144dp</dimen>
     <dimen name="photo_place_margin">72dp</dimen>
     <dimen name="material_padding_8dp">8dp</dimen>
 

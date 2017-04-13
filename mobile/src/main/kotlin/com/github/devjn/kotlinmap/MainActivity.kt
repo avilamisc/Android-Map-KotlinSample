@@ -35,6 +35,7 @@ import com.github.devjn.kotlinmap.Common.Companion.STORAGE_PERMISSION_REQUEST_CO
 import com.github.devjn.kotlinmap.databinding.ActivityMainBinding
 import com.github.devjn.kotlinmap.utils.PermissionUtils
 import com.github.devjn.kotlinmap.utils.PlacePoint
+import com.github.devjn.kotlinmap.utils.UIUtils
 import com.github.devjn.kotlinmap.utils.UIUtils.getBitmap
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException
@@ -50,7 +51,6 @@ import com.google.android.gms.maps.model.*
 import com.google.maps.android.clustering.ClusterManager
 import com.google.maps.android.data.geojson.GeoJsonLayer
 import com.google.maps.android.data.geojson.GeoJsonPointStyle
-import org.ferriludium.simplegeoprox.MapObjectHolder
 import org.json.JSONException
 import java.io.IOException
 import java.util.*
@@ -75,8 +75,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private lateinit var mResponseService: ResponseService
     private var locationManager: LocationManager? = null
     private var provider: String? = null
+    private val testLat = 60.178
+    private val testLng = 24.928
 
-    private val mMarkersMap = HashMap<Marker, MapObjectHolder<PlacePoint>>(3)
+    private val mMarkersMap = HashMap<Marker, PlaceClusterItem>(3)
     private lateinit var mClusterManager: ClusterManager<PlaceClusterItem>
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -200,11 +202,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         // as you specify a parent activity in AndroidManifest.xml.
         val id = item.itemId
 
-
         if (id == R.id.action_settings) {
             return true
         }
-
         return super.onOptionsItemSelected(item)
     }
 
@@ -281,14 +281,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         println("Disabled provider " + provider)
         locationManager?.removeUpdates(this)
         this.provider = locationManager?.getBestProvider(Criteria(), true)
-        this. provider?: locationManager?.requestLocationUpdates(provider, 4000, 10f, this)
+        this.provider?.let { locationManager?.requestLocationUpdates(provider, 4000, 10f, this) }
     }
 
     internal var geoLayer: GeoJsonLayer? = null
 
     override fun onMapReady(map: GoogleMap) {
         this.mGoogleMap = map
-        val pos = LatLng(60.178, 24.928)
+        val pos = LatLng(testLat, testLng)
 
         enableMyLocation()
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(pos, 13f))
@@ -312,7 +312,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         // (Activity extends context, so we can pass 'this' in the constructor.)
         mClusterManager = ClusterManager<PlaceClusterItem>(this, mGoogleMap)
 //        mClusterManager.setOnClusterItemClickListener { item ->
-//            updateBottomSheetContent(item.mPlace as PlacePoint)
+//            updateBottomSheetContent(item.`object`)
 //            true
 //        }
 
@@ -396,7 +396,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun updateBottomSheetContent(place: PlacePoint) {
-        binding.appBarMain.place = place
+        binding.appBarMain.setVariable(BR.place, place)
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
     }
 
@@ -493,8 +493,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         Log.i(TAG, "Location result response is received")
         if (mGoogleMap == null || result == null) return
         mClusterManager.addItems(result);
-        mGoogleMap!!.moveCamera(CameraUpdateFactory.newLatLngZoom(mGoogleMap!!.cameraPosition.target, 12f))
-        Toast.makeText(applicationContext, R.string.location_updated, Toast.LENGTH_SHORT).show()
+        UIUtils.runOnUIThread(Runnable {
+            mGoogleMap!!.moveCamera(CameraUpdateFactory.newLatLngZoom(mGoogleMap!!.cameraPosition.target, 12f))
+            Toast.makeText(applicationContext, R.string.location_updated, Toast.LENGTH_SHORT).show()
+        })
     }
 
     private fun onSearchClick() {
@@ -507,15 +509,23 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 if (mLastLocation == null) {
                     Log.w(TAG, "Location is not available")
                     Toast.makeText(this, R.string.location_not_available, Toast.LENGTH_LONG).show()
-                    provider?: locationManager!!.requestSingleUpdate(provider, this, null)
-                    return
+                    provider = locationManager!!.getBestProvider(criteria, true)
+                    provider?.let { locationManager!!.requestSingleUpdate(provider, this, null) }
+//                    return
                 }
-            } else
-                return
+            } //else return
         }
-        val lat = mLastLocation!!.latitude
-        val lng = mLastLocation!!.longitude
+        var lat: Double = 0.0
+        var lng: Double = 0.0
+        mLastLocation?.let {
+            lat = mLastLocation!!.latitude
+            lng = mLastLocation!!.longitude
+        } ?: run {
+            lat = testLat
+            lng = testLng
+        }
         Log.i(TAG, "Search click, lat= $lat, lng= $lng")
+        mGoogleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(testLat, testLng), 14f))
         showBottomList(lat, lng)
     }
 
@@ -541,7 +551,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private fun showBottomList(lat: Double, lng: Double) {
         if (listBottomSheet == null)
             listBottomSheet = ListBottomSheetDialogFragment.newInstance()
-        listBottomSheet!!.show(supportFragmentManager, listBottomSheet!!.tag, lat, lng)
+        if (!listBottomSheet!!.isAdded)
+            listBottomSheet!!.show(supportFragmentManager, listBottomSheet!!.tag, lat, lng)
     }
 
     companion object {

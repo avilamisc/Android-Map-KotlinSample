@@ -2,8 +2,8 @@ package com.github.devjn.kotlinmap.utils
 
 class PlacePoint {
 
-    var name: String = ""
-    var detailName: String = ""
+    var name: String = "Name"
+    var detailName: String = "Detail"
 
     var description: String? = null
     var image: String? = null

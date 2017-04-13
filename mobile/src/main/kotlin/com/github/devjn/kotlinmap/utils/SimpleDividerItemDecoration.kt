@@ -7,6 +7,8 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import com.github.devjn.kotlinmap.R
 
+
+
 /**
  * Created by @author ${user} on ${date}
  *
@@ -16,10 +18,17 @@ import com.github.devjn.kotlinmap.R
 
 class SimpleDividerItemDecoration(context: Context) : RecyclerView.ItemDecoration() {
     private val mDivider: Drawable = ContextCompat.getDrawable(context, R.drawable.line_divider)
+    private var padLeft = 0
+    private var padRight = 0
+
+    constructor(context: Context, padLeft: Int, padRight: Int) : this(context) {
+        this.padLeft = padLeft;
+        this.padRight = padRight
+    }
 
     override fun onDrawOver(c: Canvas, parent: RecyclerView, state: RecyclerView.State?) {
-        val left = parent.paddingLeft
-        val right = parent.width - parent.paddingRight
+        val left = if (padLeft > 0) padLeft else parent.paddingLeft
+        val right = parent.width - if (padRight > 0) padRight else parent.paddingRight
 
         val childCount = parent.childCount
         for (i in 0..childCount - 1) {

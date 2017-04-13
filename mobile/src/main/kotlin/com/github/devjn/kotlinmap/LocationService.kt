@@ -1,8 +1,6 @@
 package com.github.devjn.kotlinmap
 
-import com.github.devjn.kotlinmap.utils.PlacePoint
 import com.github.devjn.kotlinmap.utils.ServerRespose
-import org.ferriludium.simplegeoprox.MapObjectHolder
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -17,7 +15,7 @@ interface LocationService {
     @GET("places")
     fun nearLocations(
             @Query("lat") lat: Double,
-            @Query("lng") lng: Double): Call<Collection<MapObjectHolder<PlacePoint>>>
+            @Query("lng") lng: Double): Call<Collection<PlaceClusterItem>>
 
     @get:GET("places_all")
     val all: Call<ServerRespose.MapAll>

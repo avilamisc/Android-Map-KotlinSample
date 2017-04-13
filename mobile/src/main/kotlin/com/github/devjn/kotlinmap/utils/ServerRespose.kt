@@ -1,15 +1,16 @@
 package com.github.devjn.kotlinmap.utils
 
-import org.ferriludium.simplegeoprox.MapObjectHolder
+import com.github.devjn.kotlinmap.PlaceClusterItem
+
 
 class ServerRespose {
 
     class MapAll {
         var version: Int = 0
             private set
-        var placePoints: Collection<MapObjectHolder<PlacePoint>>
+        var placePoints: Collection<PlaceClusterItem>
 
-        constructor(version: Int, placePoints: Collection<MapObjectHolder<PlacePoint>>) {
+        constructor(version: Int, placePoints: Collection<PlaceClusterItem>) {
             this.version = version
             this.placePoints = placePoints
         }

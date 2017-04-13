@@ -5,10 +5,11 @@ import com.github.devjn.kotlinmap.LocationService.Companion.retrofit
 import com.github.devjn.kotlinmap.utils.Helper
 import com.github.devjn.kotlinmap.utils.PlacePoint
 import com.github.devjn.kotlinmap.utils.ServerRespose
-import com.github.devjn.kotlinmap.utils.UIUtils
+import com.google.android.gms.maps.model.LatLng
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
+import com.javadocmd.simplelatlng.util.LengthUnit
 import org.ferriludium.simplegeoprox.FeSimpleGeoProx
 import retrofit2.Call
 import retrofit2.Callback
@@ -108,10 +109,8 @@ class ResponseService {
                     val jsonFile = read(Common.MAP_FILENAME)
                     val listType = object : TypeToken<List<PlaceClusterItem>>() {}.type
                     mapObjects = gson.fromJson<List<PlaceClusterItem>>(jsonFile, listType)
-//                    world = FeSimpleGeoProx(mapObjects)
-                    UIUtils.runOnUIThread(Runnable {
-                        mListener?.onLocationResult(mapObjects)
-                    })
+                    world = FeSimpleGeoProx(mapObjects)
+                    mListener?.onLocationResult(mapObjects)
                     Log.i(TAG, "world created, size= " + mapObjects!!.size + " content: " + mapObjects)
                     return@Action0
                 } catch (e: IOException) {
@@ -123,8 +122,8 @@ class ResponseService {
                 Log.e(TAG, "Map file doesn't exist")
                 Schedulers.io().createWorker().schedule(Action0 {
                     mapObjects = GeoJsonConverter.ConvertLocalJson();
-//                    world = FeSimpleGeoProx(mapObjects)
-                    UIUtils.runOnUIThread(Runnable { mListener?.onLocationResult(mapObjects) })
+                    world = FeSimpleGeoProx(mapObjects)
+                    mListener?.onLocationResult(mapObjects)
                     Log.i(TAG, "world created, size= " + mapObjects!!.size + " content: " + mapObjects)
                     return@Action0
                 })
@@ -134,30 +133,30 @@ class ResponseService {
     }
 
     fun getNearLocations(lat: Double, lng: Double) {
-//        if (world != null) {
-//            val result = world!!.find(LatLng(lat, lng), 1.0, LengthUnit.KILOMETER)
-//            mListener!!.onLocationResult(result)
-//        } else {
-//            val call = locationService!!.nearLocations(lat, lng)
-//            call.enqueue(nearCallback)
-//        }
+        if (world != null) {
+            val result = world!!.find(LatLng(lat, lng), 1.0, LengthUnit.KILOMETER)
+            mListener!!.onLocationResult(result as Collection<PlaceClusterItem>?)
+        } else {
+            val call = locationService!!.nearLocations(lat, lng)
+            call.enqueue(nearCallback)
+        }
     }
 
     fun getNearLocations(lat: Double, lng: Double, listener: LocationResultListener) {
-/*        if (world != null) {
+        if (world != null) {
             val result = world!!.find(LatLng(lat, lng), 1.0, LengthUnit.KILOMETER)
-            listener.onLocationResult(result)
+            listener.onLocationResult(result as Collection<PlaceClusterItem>?)
         } else {
             val call = locationService!!.nearLocations(lat, lng)
-            call.enqueue(object : Callback<Collection<MapObjectHolder<PlacePoint>>> {
-                override fun onResponse(call: Call<Collection<MapObjectHolder<PlacePoint>>>, response: Response<Collection<MapObjectHolder<PlacePoint>>>) {
+            call.enqueue(object : Callback<Collection<PlaceClusterItem>> {
+                override fun onResponse(call: Call<Collection<PlaceClusterItem>>, response: Response<Collection<PlaceClusterItem>>) {
                     val result = response.body()
                     listener.onLocationResult(result)
                 }
-                override fun onFailure(call: Call<Collection<MapObjectHolder<PlacePoint>>>, t: Throwable) {
+                override fun onFailure(call: Call<Collection<PlaceClusterItem>>, t: Throwable) {
                 }
             })
-        }*/
+        }
     }
 
     val allLocations: List<PlaceClusterItem>

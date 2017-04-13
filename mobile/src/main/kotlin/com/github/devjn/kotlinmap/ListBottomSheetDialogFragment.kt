@@ -15,6 +15,7 @@ import com.github.devjn.kotlinmap.databinding.FragmentListBottomsheetBinding
 import com.github.devjn.kotlinmap.databinding.ListItemCafeBinding
 import com.github.devjn.kotlinmap.utils.PlacePoint
 import com.github.devjn.kotlinmap.utils.SimpleDividerItemDecoration
+import com.github.devjn.kotlinmap.utils.UIUtils
 import com.minimize.android.rxrecycleradapter.RxDataSource
 import rx.Observable
 import rx.subjects.PublishSubject
@@ -28,9 +29,10 @@ import java.util.*
  */
 
 class ListBottomSheetDialogFragment : BottomSheetDialogFragment() {
+    val TAG = ListBottomSheetDialogFragment::class.java.kotlin.simpleName
 
-    private var lat: Double = 0.toDouble()
-    private var lng: Double = 0.toDouble()
+    private var lat: Double = 0.0
+    private var lng: Double = 0.0
 
     private var listPlaces: List<PlaceClusterItem>? = null
 
@@ -39,7 +41,7 @@ class ListBottomSheetDialogFragment : BottomSheetDialogFragment() {
 //    private  val mRecyclerAdapter
     private lateinit var mLayoutManager: LinearLayoutManager
 
-    private var rxDataSource: RxDataSource<PlaceClusterItem>? = null
+    private lateinit var rxDataSource: RxDataSource<PlaceClusterItem>
     private val onClickSubject = PublishSubject.create<PlacePoint>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,7 +54,7 @@ class ListBottomSheetDialogFragment : BottomSheetDialogFragment() {
         mLayoutManager = LinearLayoutManager(activity)
         mRecyclerView.layoutManager = mLayoutManager
         mRecyclerView.itemAnimator = DefaultItemAnimator()
-        val mDividerItemDecoration = SimpleDividerItemDecoration(context)
+        val mDividerItemDecoration = SimpleDividerItemDecoration(context, UIUtils.dp(16f), UIUtils.dp(16f))
         //                new DividerItemDecoration(mRecyclerView.getContext(), mLayoutManager.getOrientation());
         mRecyclerView.addItemDecoration(mDividerItemDecoration)
         return binding.root
@@ -71,16 +73,17 @@ class ListBottomSheetDialogFragment : BottomSheetDialogFragment() {
         ResponseService.instance.getNearLocations(lat, lng, object : ResponseService.LocationResultListener {
             override fun onLocationResult(result: Collection<PlaceClusterItem>?) {
                 this@ListBottomSheetDialogFragment.listPlaces = ArrayList(result)
-                rxDataSource!!.updateDataSet(listPlaces).updateAdapter()
-                rxDataSource!!
+                rxDataSource.updateDataSet(listPlaces).updateAdapter()
+                rxDataSource
                         .bindRecyclerView<ListItemCafeBinding>(mRecyclerView, R.layout.list_item_cafe)
                         .subscribe { viewHolder ->
                             val b = viewHolder.viewDataBinding
-                            val place = viewHolder.item.mPlace
+                            val place = viewHolder.item.clientObject
                             b.place = place
                             b.root.setOnClickListener { onClickSubject.onNext(place) }
                         }
-                Log.i("frag", "list places " + listPlaces!!)
+                binding.progressBar.visibility = View.GONE
+                Log.i(TAG, "list places: " + listPlaces)
             }
         })
     }
@@ -88,7 +91,7 @@ class ListBottomSheetDialogFragment : BottomSheetDialogFragment() {
     val positionClicks: Observable<PlacePoint>
         get() = onClickSubject.asObservable()
 
-    fun show(manager: FragmentManager, tag: String, lat: Double, lng: Double) {
+    fun show(manager: FragmentManager, tag: String?, lat: Double, lng: Double) {
         this.lat = lat
         this.lng = lng
         super.show(manager, tag)

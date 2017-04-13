@@ -10,6 +10,7 @@ import android.util.Log
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.github.devjn.kotlinmap.Common
+import com.github.devjn.kotlinmap.R
 import com.github.devjn.kotlinmap.readWhile
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -23,6 +24,19 @@ import java.io.*
  *
  * $Helper
  */
+
+
+@BindingAdapter("bind:imageUrl")
+fun loadImage(imageView: ImageView, v: String) {
+    val suffix = "_img_01.jpg"
+    Glide.with(imageView.context).load(Helper.DIRECTORY_PATH + v + suffix).into(imageView)
+}
+
+
+@BindingAdapter("bind:imageUrlSample")
+fun loadSampleImage(imageView: ImageView, v: String?) {
+    Glide.with(imageView.context).load(R.drawable.img_kotlin_feature).into(imageView)
+}
 
 object Helper {
 
@@ -127,18 +141,6 @@ object Helper {
         ins.copyTo(out);
     }
 
-    private val suffix = "_img_01.jpg"
-
-    @BindingAdapter("bind:imageUrl")
-    fun loadImage(imageView: ImageView, v: String) {
-        Glide.with(imageView.context).load(DIRECTORY_PATH + v + suffix).into(imageView)
-        //        Picasso.with(imageView.getContext()).load(v).into(imageView);
-    }
-
-    @BindingAdapter("bind:imageUrlSample")
-    fun loadSampleImage(imageView: ImageView, v: String) {
-        //        Picasso.with(imageView.getContext()).load(v).into(imageView);
-    }
 
     /**
      * Convert a JSON string to pretty print version
