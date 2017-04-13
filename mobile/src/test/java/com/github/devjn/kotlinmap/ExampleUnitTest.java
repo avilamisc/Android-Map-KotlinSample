@@ -1,4 +1,4 @@
-package com.devjn.kotlinmap;
+package com.github.devjn.kotlinmap;
 
 import org.junit.Test;
 

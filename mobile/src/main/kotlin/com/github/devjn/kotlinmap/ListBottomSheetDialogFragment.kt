@@ -1,4 +1,4 @@
-package com.devjn.kotlinmap
+package com.github.devjn.kotlinmap
 
 import android.databinding.DataBindingUtil
 import android.os.Bundle
@@ -11,12 +11,11 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.devjn.kotlinmap.databinding.FragmentListBottomsheetBinding
-import com.devjn.kotlinmap.databinding.ListItemCafeBinding
-import com.devjn.kotlinmap.utils.PlacePoint
-import com.devjn.kotlinmap.utils.SimpleDividerItemDecoration
+import com.github.devjn.kotlinmap.databinding.FragmentListBottomsheetBinding
+import com.github.devjn.kotlinmap.databinding.ListItemCafeBinding
+import com.github.devjn.kotlinmap.utils.PlacePoint
+import com.github.devjn.kotlinmap.utils.SimpleDividerItemDecoration
 import com.minimize.android.rxrecycleradapter.RxDataSource
-import org.ferriludium.simplegeoprox.MapObjectHolder
 import rx.Observable
 import rx.subjects.PublishSubject
 import java.util.*
@@ -33,14 +32,14 @@ class ListBottomSheetDialogFragment : BottomSheetDialogFragment() {
     private var lat: Double = 0.toDouble()
     private var lng: Double = 0.toDouble()
 
-    private var listPlaces: List<MapObjectHolder<PlacePoint>>? = null
+    private var listPlaces: List<PlaceClusterItem>? = null
 
     private lateinit var binding: FragmentListBottomsheetBinding
     private lateinit var mRecyclerView: RecyclerView
 //    private  val mRecyclerAdapter
     private lateinit var mLayoutManager: LinearLayoutManager
 
-    private var rxDataSource: RxDataSource<MapObjectHolder<PlacePoint>>? = null
+    private var rxDataSource: RxDataSource<PlaceClusterItem>? = null
     private val onClickSubject = PublishSubject.create<PlacePoint>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,14 +69,14 @@ class ListBottomSheetDialogFragment : BottomSheetDialogFragment() {
         this.lat = lat
         this.lng = lng
         ResponseService.instance.getNearLocations(lat, lng, object : ResponseService.LocationResultListener {
-            override fun onLocationResult(result: Collection<MapObjectHolder<PlacePoint>>?) {
+            override fun onLocationResult(result: Collection<PlaceClusterItem>?) {
                 this@ListBottomSheetDialogFragment.listPlaces = ArrayList(result)
                 rxDataSource!!.updateDataSet(listPlaces).updateAdapter()
                 rxDataSource!!
                         .bindRecyclerView<ListItemCafeBinding>(mRecyclerView, R.layout.list_item_cafe)
                         .subscribe { viewHolder ->
                             val b = viewHolder.viewDataBinding
-                            val place = viewHolder.item.clientObject
+                            val place = viewHolder.item.mPlace
                             b.place = place
                             b.root.setOnClickListener { onClickSubject.onNext(place) }
                         }

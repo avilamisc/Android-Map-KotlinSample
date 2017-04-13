@@ -1,4 +1,4 @@
-package com.devjn.kotlinmap
+package com.github.devjn.kotlinmap
 
 import android.Manifest
 import android.app.Activity
@@ -30,10 +30,12 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
-import com.devjn.kotlinmap.databinding.ActivityMainBinding
-import com.devjn.kotlinmap.utils.PermissionUtils
-import com.devjn.kotlinmap.utils.PlacePoint
-import com.devjn.kotlinmap.utils.UIUtils.getBitmap
+import com.github.devjn.kotlinmap.Common.Companion.LOCATION_PERMISSION_REQUEST_CODE
+import com.github.devjn.kotlinmap.Common.Companion.STORAGE_PERMISSION_REQUEST_CODE
+import com.github.devjn.kotlinmap.databinding.ActivityMainBinding
+import com.github.devjn.kotlinmap.utils.PermissionUtils
+import com.github.devjn.kotlinmap.utils.PlacePoint
+import com.github.devjn.kotlinmap.utils.UIUtils.getBitmap
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException
 import com.google.android.gms.common.GooglePlayServicesRepairableException
@@ -45,8 +47,9 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
-import com.google.maps.android.geojson.GeoJsonLayer
-import com.google.maps.android.geojson.GeoJsonPointStyle
+import com.google.maps.android.clustering.ClusterManager
+import com.google.maps.android.data.geojson.GeoJsonLayer
+import com.google.maps.android.data.geojson.GeoJsonPointStyle
 import org.ferriludium.simplegeoprox.MapObjectHolder
 import org.json.JSONException
 import java.io.IOException
@@ -74,14 +77,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private var provider: String? = null
 
     private val mMarkersMap = HashMap<Marker, MapObjectHolder<PlacePoint>>(3)
+    private lateinit var mClusterManager: ClusterManager<PlaceClusterItem>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         this.binding = DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main)
         val toolbar = binding.appBarMain.toolbar
         setSupportActionBar(toolbar)
-
-        checkPermissions()
 
         bottomSheet = binding.appBarMain.bottomSheet.bottomSheet
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
@@ -133,13 +135,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         initLocationServices()
     }
 
-    private fun checkPermissions() {
-        if (ContextCompat.checkSelfPermission(this@MainActivity, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED || !PermissionUtils.isLocationGranted) {
-            PermissionUtils.requestPermission(this, STORAGE_PERMISSION_REQUEST_CODE,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_FINE_LOCATION)
-        }
-    }
-
     private fun initLocationServices() {
         this.mResponseService = ResponseService.instance
         mResponseService.setListener(this)
@@ -148,10 +143,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
         // Define the criteria how to select the locatioin provider -> use default
         val criteria = Criteria()
-        provider = locationManager!!.getBestProvider(criteria, false)
+        provider = locationManager!!.getBestProvider(criteria, true)
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
             return
-        mLastLocation = locationManager!!.getLastKnownLocation(provider)
+        provider?.let { mLastLocation = locationManager!!.getLastKnownLocation(provider!!) }
 
         // Initialize the location fields
         val lastLocation: Location? = mLastLocation;
@@ -254,8 +249,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         super.onResume()
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             provider?.let {
-                locationManager?.requestLocationUpdates(provider, 400, 10f, this)
-                println("non null provider")
+                locationManager?.requestLocationUpdates(provider, 4000, 10f, this)
             } ?: println("null provider")
         }
     }
@@ -280,13 +274,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onProviderEnabled(provider: String) {
-        Toast.makeText(this, "Enabled new provider " + provider,
-                Toast.LENGTH_SHORT).show()
+        println("Enabled new provider: " + provider)
     }
 
     override fun onProviderDisabled(provider: String) {
-        Toast.makeText(this, "Disabled provider " + provider,
-                Toast.LENGTH_SHORT).show()
+        println("Disabled provider " + provider)
+        locationManager?.removeUpdates(this)
+        this.provider = locationManager?.getBestProvider(Criteria(), true)
+        this. provider?: locationManager?.requestLocationUpdates(provider, 4000, 10f, this)
     }
 
     internal var geoLayer: GeoJsonLayer? = null
@@ -298,37 +293,53 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         enableMyLocation()
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(pos, 13f))
 
-        map.setOnMarkerClickListener { marker ->
-            updateBottomSheetContent(marker)
-            true
-        }
+//        map.setOnMarkerClickListener { marker ->
+//            updateBottomSheetContent(marker)
+//            true
+//        }
         map.setOnMapClickListener { bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN }
-
-        val drawable: Drawable = VectorDrawableCompat.create(resources, R.drawable.ic_menu_camera, null)!!
 
         map.addMarker(MarkerOptions()
                 .title("Test")
                 .snippet("Test location.")
                 .position(pos))
 
-        //GeoJSon
+        setUpClusterer()
+    }
+
+    private fun setUpClusterer() {
+        // Initialize the manager with the context and the map.
+        // (Activity extends context, so we can pass 'this' in the constructor.)
+        mClusterManager = ClusterManager<PlaceClusterItem>(this, mGoogleMap)
+//        mClusterManager.setOnClusterItemClickListener { item ->
+//            updateBottomSheetContent(item.mPlace as PlacePoint)
+//            true
+//        }
+
+        // Point the map's listeners at the listeners implemented by the cluster
+        // manager.
+        mGoogleMap!!.setOnCameraIdleListener(mClusterManager)
+        mGoogleMap!!.setOnMarkerClickListener(mClusterManager)
+    }
+
+    //GeoJSon
+    internal fun initGeoJsonLayer() {
         geoLayer = null
         try {
-            geoLayer = GeoJsonLayer(map, R.raw.export, applicationContext)
+            geoLayer = GeoJsonLayer(mGoogleMap!!, R.raw.export, applicationContext)
             //            geoLayer.getDefaultPointStyle().setIcon(BitmapDescriptorFactory.fromBitmap(getBitmap(drawable)));
-            val var1 = geoLayer!!.features.iterator()
+            val iterator = geoLayer!!.features.iterator()
 
+            val drawable: Drawable = VectorDrawableCompat.create(resources, R.drawable.ic_menu_camera, null)!!
             val pointStyle = geoLayer!!.defaultPointStyle
             pointStyle.icon = BitmapDescriptorFactory.fromBitmap(getBitmap(drawable))
 
             val drawableFood = VectorDrawableCompat.create(resources, R.drawable.ic_food, null)!!
-
             val pointStyle2 = GeoJsonPointStyle()
             pointStyle2.icon = BitmapDescriptorFactory.fromBitmap(getBitmap(drawableFood))
 
-            while (var1.hasNext()) {
-                val feature = var1.next()
-                //                Log.i(TAG, "feauture: "+feature);
+            while (iterator.hasNext()) {
+                val feature = iterator.next()
                 if (feature.getProperty("name") == null)
                     feature.pointStyle = pointStyle
                 else
@@ -341,7 +352,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         } catch (e: JSONException) {
             e.printStackTrace()
         }
-
     }
 
 
@@ -349,14 +359,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
      * Enables the My Location geoLayer if the fine location permission has been granted.
      */
     private fun enableMyLocation() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
-            //            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
-            //                    != PackageManager.PERMISSION_GRANTED)
+        if (PermissionUtils.isLocationGranted) {
             // Permission to access the location is missing.
             PermissionUtils.requestPermission(this, LOCATION_PERMISSION_REQUEST_CODE,
                     Manifest.permission.ACCESS_FINE_LOCATION, true)
-
         } else if (mGoogleMap != null) {
             // Access to the location has been granted to the app.
             mGoogleMap!!.isMyLocationEnabled = true
@@ -389,6 +395,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
     }
 
+    private fun updateBottomSheetContent(place: PlacePoint) {
+        binding.appBarMain.place = place
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+    }
+
     override fun onConnectionFailed(connectionResult: ConnectionResult) {
         Log.e(TAG, "Google Places API connection failed with error code: " + connectionResult.errorCode)
         Toast.makeText(this,
@@ -412,7 +423,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         val criteria = Criteria()
                         provider = locationManager!!.getBestProvider(criteria, false)
                     }
-                    locationManager!!.requestLocationUpdates(provider, 400, 10f, this)
+                    locationManager!!.requestLocationUpdates(provider, 4000, 10f, this)
                 }
                 enableMyLocation()
             } else {
@@ -478,6 +489,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
+    override fun onLocationResult(result: Collection<PlaceClusterItem>?) {
+        Log.i(TAG, "Location result response is received")
+        if (mGoogleMap == null || result == null) return
+        mClusterManager.addItems(result);
+        mGoogleMap!!.moveCamera(CameraUpdateFactory.newLatLngZoom(mGoogleMap!!.cameraPosition.target, 12f))
+        Toast.makeText(applicationContext, R.string.location_updated, Toast.LENGTH_SHORT).show()
+    }
+
     private fun onSearchClick() {
         if (mLastLocation == null) {
             Log.w(TAG, "Last location is null")
@@ -517,20 +536,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 .newInstance(true).show(supportFragmentManager, "dialog")
     }
 
-    override fun onLocationResult(result: Collection<MapObjectHolder<PlacePoint>>?) {
-        Log.i(TAG, "response: " + result)
-        Toast.makeText(applicationContext, "response: " + result, Toast.LENGTH_LONG).show()
-        if (mGoogleMap == null || result == null) return
-        for (mapHolder in result) {
-            val pos = LatLng(mapHolder.clientObject.latitude, mapHolder.clientObject.longitude)
-            val markerOptions = MarkerOptions()
-            markerOptions.title(mapHolder.clientObject.name).position(pos)
-                    .anchor(0.0f, 1.0f) // Anchors the marker on the bottom left
-                    .snippet("Some place")
-            mMarkersMap.put(mGoogleMap!!.addMarker(markerOptions), mapHolder)
-        }
-    }
-
     internal var listBottomSheet: ListBottomSheetDialogFragment? = null
 
     private fun showBottomList(lat: Double, lng: Double) {
@@ -545,18 +550,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
         }
 
-        private val TAG = MainActivity::class.java.simpleName
         private val GOOGLE_API_CLIENT_ID = 0
         private val PERMISSIONS_REQUEST_CODE = 100
         private val REQUEST_PLACE_PICKER = 202
 
-        /**
-         * Request code for location permission request.
-
-         * @see .onRequestPermissionsResult
-         */
-        private val LOCATION_PERMISSION_REQUEST_CODE = 101
-        private val STORAGE_PERMISSION_REQUEST_CODE = 102
     }
 
 }

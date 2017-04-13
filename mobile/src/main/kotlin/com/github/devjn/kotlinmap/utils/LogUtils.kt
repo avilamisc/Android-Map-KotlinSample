@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.devjn.kotlinmap.utils
+package com.github.devjn.kotlinmap.utils
 
 import android.util.Log
 

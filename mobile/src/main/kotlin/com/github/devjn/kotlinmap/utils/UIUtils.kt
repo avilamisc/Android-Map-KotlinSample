@@ -1,4 +1,4 @@
-package com.devjn.kotlinmap.utils
+package com.github.devjn.kotlinmap.utils
 
 import android.annotation.SuppressLint
 import android.annotation.TargetApi
@@ -21,9 +21,9 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ScrollView
 import android.widget.TextView
-import com.devjn.kotlinmap.BuildConfig
-import com.devjn.kotlinmap.Common
-import com.devjn.kotlinmap.utils.LogUtils.LOGE
+import com.github.devjn.kotlinmap.BuildConfig
+import com.github.devjn.kotlinmap.Common
+import com.github.devjn.kotlinmap.utils.LogUtils.LOGE
 import java.text.DateFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat

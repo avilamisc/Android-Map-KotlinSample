@@ -1,7 +1,6 @@
-package com.devjn.kotlinmap.utils
+package com.github.devjn.kotlinmap.utils
 
 import android.app.Activity
-import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
 import android.databinding.BindingAdapter
@@ -10,9 +9,12 @@ import android.os.Environment
 import android.util.Log
 import android.widget.ImageView
 import com.bumptech.glide.Glide
+import com.github.devjn.kotlinmap.Common
+import com.github.devjn.kotlinmap.readWhile
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonParser
+import rx.schedulers.Schedulers
 import java.io.*
 
 /**
@@ -24,8 +26,10 @@ import java.io.*
 
 object Helper {
 
+    val TAG = Helper::class.java.kotlin.simpleName;
 
-    val DIRECTORY_PATH = Environment.getExternalStorageDirectory().toString() + File.separator + "Sample" + File.separator
+    val DIRECTORY_PATH = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath
+    //Environment.getExternalStorageDirectory().toString() + File.separator + "Sample" + File.separator
 
     fun saveFile(context: Context, fileName: String, file: String): String {
         Log.i(TAG, Environment.getExternalStorageDirectory().toString() + " " + Environment.getRootDirectory())
@@ -49,6 +53,30 @@ object Helper {
         return directory.absolutePath
     }
 
+    fun write(filename: String, file: String) {
+        val outputStream: FileOutputStream
+        try {
+            outputStream = Common.applicationContext.openFileOutput(filename, Context.MODE_PRIVATE)
+            outputStream.write(file.toByteArray(charset("UTF-8")))
+            outputStream.close()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    fun writeAsync(filename: String, file: String) {
+        Schedulers.io().createWorker().schedule {
+            val outputStream: FileOutputStream
+            try {
+                outputStream = Common.applicationContext.openFileOutput(filename, Context.MODE_PRIVATE)
+                outputStream.write(file.toByteArray(charset("UTF-8")))
+                outputStream.close()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
     fun copyFileToDir(fileName: String, file: File) {
         val directory = File(DIRECTORY_PATH)
         if (!directory.exists()) {
@@ -61,16 +89,28 @@ object Helper {
         } catch (e: IOException) {
             Log.e(TAG, "Failed to copyFile: " + e)
         }
+    }
 
+    fun copyFileToDir(fileName: String, ins: InputStream) {
+        val directory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+        if (!directory.exists()) {
+            // creates misssing parts of directory
+            directory.mkdirs()
+        }
+        val mypath = File(directory, fileName)
+        try {
+            fileCopy(ins, mypath.outputStream())
+        } catch (e: IOException) {
+            Log.e(TAG, "Failed to copyFile: " + e)
+        }
     }
 
     // Fastest way to Copy file in Java
     @Throws(IOException::class)
-    fun fileCopy(`in`: File, out: File) {
-        val inChannel = FileInputStream(`in`).channel
+    fun fileCopy(inFile: File, out: File) {
+        val inChannel = FileInputStream(inFile).channel
         val outChannel = FileOutputStream(out).channel
         try {
-            // Try to change this but this is the number I tried.. for Windows, 64Mb - 32Kb)
             val maxCount = 64 * 1024 * 1024 - 32 * 1024
             val size = inChannel!!.size()
             var position: Long = 0
@@ -83,6 +123,9 @@ object Helper {
         }
     }
 
+    fun fileCopy(ins: InputStream, out: OutputStream) {
+        ins.copyTo(out);
+    }
 
     private val suffix = "_img_01.jpg"
 
@@ -115,6 +158,21 @@ object Helper {
         return prettyJson
     }
 
+    fun readTextFile(inputStream: InputStream): String {
+        val isr = InputStreamReader(inputStream)
+        val bufferedReader = BufferedReader(isr)
+        val sb = StringBuilder()
+
+        bufferedReader.readWhile { it != 1 }.forEach {
+            sb.append(it)
+        }
+
+        bufferedReader.close()
+        isr.close()
+        inputStream.close()
+        return sb.toString()
+    }
+
     /**
 
      * @param activity
@@ -131,4 +189,15 @@ object Helper {
         activity.startActivity(mapIntent)
     }
 
+}
+
+inline fun BufferedReader.readWhile(crossinline predicate: (Int) -> Boolean): Sequence<Char> {
+    return generateSequence {
+        val c = this.read()
+        if (c != -1 && predicate(c)) {
+            c.toChar()
+        } else {
+            null
+        }
+    }
 }

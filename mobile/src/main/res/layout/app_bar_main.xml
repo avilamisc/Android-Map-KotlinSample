@@ -5,13 +5,13 @@
 
     <data>
         <variable
-            name="place" type="com.devjn.kotlinmap.utils.PlacePoint" />
+            name="place" type="com.github.devjn.kotlinmap.utils.PlacePoint" />
     </data>
 
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="com.devjn.kotlinmap.MainActivity">
+        tools:context="com.github.devjn.kotlinmap.MainActivity">
 
         <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"

@@ -1,4 +1,4 @@
-package com.devjn.kotlinmap.utils
+package com.github.devjn.kotlinmap.utils
 
 import android.content.Context
 import android.content.SharedPreferences

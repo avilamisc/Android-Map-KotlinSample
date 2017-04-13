@@ -25,7 +25,7 @@
 
     <string name="title_activity_submit">Report submit</string>
 
-    <string name="fileprovider">com.devjn.kotlinmap.fileprovider</string>
+    <string name="fileprovider">com.github.devjn.kotlinmap.fileprovider</string>
 
     <!-- Strings related to login -->
     <string name="prompt_name">Name</string>
@@ -51,6 +51,7 @@
     <string name="select_take_picture">Select or take a picture</string>
     <string name="location_not_define">Location is not define</string>
     <string name="location_not_available">Location is not available</string>
+    <string name="location_updated">Location places updated</string>
 
 
 </resources>

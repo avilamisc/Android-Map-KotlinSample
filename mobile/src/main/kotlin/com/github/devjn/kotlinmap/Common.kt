@@ -1,4 +1,4 @@
-package com.devjn.kotlinmap
+package com.github.devjn.kotlinmap
 
 import android.app.AlertDialog
 import android.app.Application
@@ -35,13 +35,22 @@ class Common : Application() {
         private val ACC_NUMBER = "ACCOUNT_NUMBER"
         private val PROF_NUMBER = "PROFILE_NUMBER"
 
-
         private val AB_COLOR = "AB_COLOR"
         private val FAB_COLOR = "FAB_COLOR"
         private val BAR_COLOR = "BAR_COLOR"
         private val THEME_IMAGE = "THEME_IMAGE"
-        val PROFILE_IMAGE_PATH = "Profile_Image"
-        val NEAR_VERSION = "NEAR_VERSION"
+
+        public val PROFILE_IMAGE_PATH = "Profile_Image"
+        public val NEAR_VERSION = "NEAR_VERSION"
+        public val MAP_FILENAME = "mapPlaces"
+
+        /**
+         * Request code for location permission request.
+
+         * @see .onRequestPermissionsResult
+         */
+        val LOCATION_PERMISSION_REQUEST_CODE = 101
+        val STORAGE_PERMISSION_REQUEST_CODE = 102
 
         private val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
         private val now = Calendar.getInstance(TimeZone.getTimeZone("UTC")).time
@@ -61,7 +70,7 @@ class Common : Application() {
             get() = prefs.getInt(FAB_COLOR, Color.parseColor("#2baf2b"))
 
 
-        var nearVersion: Int
+        var placesVersion: Int
             get() = prefs.getInt(NEAR_VERSION, -1)
             set(version) {
                 Schedulers.io().createWorker().schedule { prefs.edit().putInt(NEAR_VERSION, version).apply() }

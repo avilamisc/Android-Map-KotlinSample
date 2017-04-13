@@ -1,11 +1,11 @@
-package com.devjn.kotlinmap.utils
+package com.github.devjn.kotlinmap.utils
 
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.drawable.Drawable
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
-import com.devjn.kotlinmap.R
+import com.github.devjn.kotlinmap.R
 
 /**
  * Created by @author ${user} on ${date}

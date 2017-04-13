@@ -1,7 +1,7 @@
-package com.devjn.kotlinmap
+package com.github.devjn.kotlinmap
 
-import com.devjn.kotlinmap.utils.PlacePoint
-import com.devjn.kotlinmap.utils.ServerRespose
+import com.github.devjn.kotlinmap.utils.PlacePoint
+import com.github.devjn.kotlinmap.utils.ServerRespose
 import org.ferriludium.simplegeoprox.MapObjectHolder
 import retrofit2.Call
 import retrofit2.Retrofit

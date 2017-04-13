@@ -1,4 +1,4 @@
-package com.devjn.kotlinmap;
+package com.github.devjn.kotlinmap;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

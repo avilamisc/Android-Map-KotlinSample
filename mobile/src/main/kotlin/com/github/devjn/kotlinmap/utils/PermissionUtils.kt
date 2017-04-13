@@ -1,4 +1,4 @@
-package com.devjn.kotlinmap.utils
+package com.github.devjn.kotlinmap.utils
 
 /**
  * Created by Emper on 06-Nov-16.
@@ -16,8 +16,8 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.widget.Toast
 
-import com.devjn.kotlinmap.Common
-import com.devjn.kotlinmap.R
+import com.github.devjn.kotlinmap.Common
+import com.github.devjn.kotlinmap.R
 
 /**
  * Utility class for access to runtime permissions.
@@ -66,6 +66,8 @@ object PermissionUtils {
     val isLocationGranted: Boolean
         get() = ContextCompat.checkSelfPermission(Common.applicationContext, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
 
+    val isStorageGranted: Boolean
+        get() = ContextCompat.checkSelfPermission(Common.applicationContext, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
 
     /**
      * A dialog that displays a permission denied message.

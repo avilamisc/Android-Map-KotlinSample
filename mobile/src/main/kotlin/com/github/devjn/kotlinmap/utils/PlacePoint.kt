@@ -1,4 +1,4 @@
-package com.devjn.kotlinmap.utils
+package com.github.devjn.kotlinmap.utils
 
 class PlacePoint {
 
@@ -8,31 +8,29 @@ class PlacePoint {
     var description: String? = null
     var image: String? = null
 
-    var rating: Float = 0.toFloat()
+    var rating: Float = 0f
     var type: Int = 0
 
 
-    var latitude: Double = 0.toDouble()
-    var longitude: Double = 0.toDouble()
+    var latitude: Double = 0.0
+    var longitude: Double = 0.0
 
-    constructor() {
-
-    }
+    constructor() {}
 
     constructor(latitude: Double, longitude: Double) {
         this.latitude = latitude
         this.longitude = longitude
     }
 
-    constructor(name: String, latitude: Double, longitude: Double) {
-        this.name = name
+    constructor(name: String?, latitude: Double, longitude: Double) {
+        name?.let {this.name = name}
         this.latitude = latitude
         this.longitude = longitude
     }
 
-    constructor(name: String, detail: String, type: Int, latitude: Double, longitude: Double) {
+    constructor(name: String?, detail: String, type: Int, latitude: Double, longitude: Double) {
+        name?.let {this.name = name}
         this.type = type
-        this.name = name
         this.detailName = detail
         this.latitude = latitude
         this.longitude = longitude

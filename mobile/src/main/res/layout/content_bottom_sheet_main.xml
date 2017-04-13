@@ -6,7 +6,7 @@
     <data>
         <variable
             name="place"
-            type="com.devjn.kotlinmap.utils.PlacePoint"/>
+            type="com.github.devjn.kotlinmap.utils.PlacePoint"/>
     </data>
 
     <android.support.v4.widget.NestedScrollView
@@ -19,7 +19,7 @@
         app:behavior_hideable="true"
         app:behavior_peekHeight="200dp"
         app:layout_behavior="@string/bottom_sheet_behavior"
-        tools:context="com.devjn.kotlinmap.MainActivity"
+        tools:context="com.github.devjn.kotlinmap.MainActivity"
         tools:showIn="@layout/app_bar_main">
 
 
