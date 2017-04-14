@@ -128,9 +128,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                             arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
                             PERMISSIONS_REQUEST_CODE)
                 } else {
-                    //                        callPlaceDetectionApi();
+                    //callPlaceDetectionApi();
                 }
-
             } else
                 Log.e(TAG, "mGoogleApiClient is not connected")
         }
@@ -311,10 +310,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         // Initialize the manager with the context and the map.
         // (Activity extends context, so we can pass 'this' in the constructor.)
         mClusterManager = ClusterManager<PlaceClusterItem>(this, mGoogleMap)
-//        mClusterManager.setOnClusterItemClickListener { item ->
-//            updateBottomSheetContent(item.`object`)
-//            true
-//        }
+        mClusterManager.setOnClusterItemClickListener { item ->
+            updateBottomSheetContent(item.`object`)
+            false
+        }
 
         // Point the map's listeners at the listeners implemented by the cluster
         // manager.
@@ -385,18 +384,23 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     if (feature.hasProperty("amenity")) {
                         placePoint.detailName = feature.getProperty("amenity")
                     }
-                    binding.appBarMain.place = placePoint
+                    binding.appBarMain.bottomSheet.place = placePoint
                     bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
                 }
             }
             return
         }
-        binding.appBarMain.place = holder.clientObject
+        binding.appBarMain.bottomSheet.place = holder.clientObject
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
     }
 
     private fun updateBottomSheetContent(place: PlacePoint) {
-        binding.appBarMain.setVariable(BR.place, place)
+        if(place.name.isBlank()) {
+            Toast.makeText(this@MainActivity, "No name", Toast.LENGTH_SHORT).show()
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+            return
+        }
+        binding.appBarMain.bottomSheet.place = place
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
     }
 
