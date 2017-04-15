@@ -1,0 +1,22 @@
+apply plugin: 'java'
+apply plugin: 'kotlin'
+
+sourceSets {
+    main.java.srcDirs += 'src/main/kotlin'
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    // kotlin std lib
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+
+    compile 'com.github.devjn:fesimplegeoprox-android-maps:common-v1.0'
+    compile 'com.squareup.retrofit2:retrofit:2.1.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.1.0'
+    compile 'com.google.code.gson:gson:2.8.0'
+    compile 'io.reactivex:rxjava:1.2.2'
+}
+
+sourceCompatibility = "1.7"
+targetCompatibility = "1.7"

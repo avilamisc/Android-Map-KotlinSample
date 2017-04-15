@@ -5,6 +5,6 @@
 
 //rootProject.buildFileName = 'build.gradle.kts'
 
-include ':mobile'
+include ':mobile', ':common'
 //
 //configureGradleScriptKotlinOn rootProject

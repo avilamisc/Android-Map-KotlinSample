@@ -1,19 +1,18 @@
 package com.github.devjn.kotlinmap
 
+import com.github.devjn.kotlinmap.common.PlaceClusterItem
+import com.github.devjn.kotlinmap.common.PlacePoint
 import com.github.devjn.kotlinmap.utils.Helper
-import com.github.devjn.kotlinmap.utils.PlacePoint
 import com.github.filosganga.geogson.gson.GeometryAdapterFactory
 import com.github.filosganga.geogson.model.FeatureCollection
 import com.github.filosganga.geogson.model.Geometry
 import com.google.gson.GsonBuilder
-import com.javadocmd.simplelatlng.LatLng
 import java.util.*
 
 /**
  * Created by @author Jahongir on ${date}
  *
- *
- * ${file_name}
+ * GeoJsonConverter
  */
 
 class GeoJsonConverter {
@@ -21,15 +20,12 @@ class GeoJsonConverter {
     private val pointList = ArrayList<PlacePoint>()
 
     private fun initGeo(mapObjects: MutableList<PlaceClusterItem>) {
-        for (point in pointList) {
-//            val loc = getLatLngForYourGeographicalPointClass(point)
-            mapObjects.add(PlaceClusterItem( point))
-        }
+        pointList.mapTo(mapObjects, ::PlaceClusterItem)
     }
 
-    private fun getLatLngForYourGeographicalPointClass(point: PlacePoint): LatLng {
-        return LatLng(point.latitude, point.longitude)
-    }
+//    private fun getLatLngForYourGeographicalPointClass(point: PlacePoint): LatLng {
+//        return LatLng(point.latitude, point.longitude)
+//    }
 
     private fun readGson() {
         val gson = GsonBuilder()

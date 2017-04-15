@@ -1,6 +1,6 @@
-package com.github.devjn.kotlinmap.utils
+package com.github.devjn.kotlinmap.common.services
 
-import com.github.devjn.kotlinmap.PlaceClusterItem
+import com.github.devjn.kotlinmap.common.PlaceClusterItem
 
 
 class ServerRespose {

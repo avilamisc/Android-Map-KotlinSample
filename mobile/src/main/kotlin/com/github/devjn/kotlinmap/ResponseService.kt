@@ -2,9 +2,10 @@ package com.github.devjn.kotlinmap
 
 import android.util.Log
 import com.github.devjn.kotlinmap.LocationService.Companion.retrofit
+import com.github.devjn.kotlinmap.common.PlaceClusterItem
+import com.github.devjn.kotlinmap.common.PlacePoint
 import com.github.devjn.kotlinmap.utils.Helper
-import com.github.devjn.kotlinmap.utils.PlacePoint
-import com.github.devjn.kotlinmap.utils.ServerRespose
+import com.github.devjn.kotlinmap.common.services.ServerRespose
 import com.google.android.gms.maps.model.LatLng
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder

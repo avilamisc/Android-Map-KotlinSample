@@ -6,7 +6,7 @@
     <data>
         <variable
             name="place"
-            type="com.github.devjn.kotlinmap.utils.PlacePoint"/>
+            type="com.github.devjn.kotlinmap.common.PlacePoint"/>
     </data>
 
     <LinearLayout

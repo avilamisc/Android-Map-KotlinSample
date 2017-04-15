@@ -1,6 +1,7 @@
 package com.github.devjn.kotlinmap
 
-import com.github.devjn.kotlinmap.utils.ServerRespose
+import com.github.devjn.kotlinmap.common.PlaceClusterItem
+import com.github.devjn.kotlinmap.common.services.ServerRespose
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory

@@ -1,4 +1,4 @@
-package com.github.devjn.kotlinmap.utils
+package com.github.devjn.kotlinmap.common
 
 class PlacePoint {
 

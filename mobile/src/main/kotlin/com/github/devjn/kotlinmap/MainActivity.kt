@@ -32,9 +32,10 @@ import android.view.View
 import android.widget.Toast
 import com.github.devjn.kotlinmap.Common.Companion.LOCATION_PERMISSION_REQUEST_CODE
 import com.github.devjn.kotlinmap.Common.Companion.STORAGE_PERMISSION_REQUEST_CODE
+import com.github.devjn.kotlinmap.common.PlaceClusterItem
+import com.github.devjn.kotlinmap.common.PlacePoint
 import com.github.devjn.kotlinmap.databinding.ActivityMainBinding
 import com.github.devjn.kotlinmap.utils.PermissionUtils
-import com.github.devjn.kotlinmap.utils.PlacePoint
 import com.github.devjn.kotlinmap.utils.UIUtils
 import com.github.devjn.kotlinmap.utils.UIUtils.getBitmap
 import com.google.android.gms.common.ConnectionResult
