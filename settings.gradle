@@ -8,3 +8,4 @@
 include ':mobile', ':common'
 //
 //configureGradleScriptKotlinOn rootProject
+include ':ios'
