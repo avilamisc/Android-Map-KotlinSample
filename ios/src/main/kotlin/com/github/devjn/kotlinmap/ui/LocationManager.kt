@@ -92,7 +92,7 @@ class LocationManager : CLLocationManagerDelegate {
             if (tracking) {
                 println("--- Location updated")
                 if (delegate != null) {
-                    delegate!!.didUpdateTrackingLocation(this, locationManager!!.location())
+                    delegate!!.didUpdateTrackingLocation(this, locationManager.location())
                 }
             }
         }

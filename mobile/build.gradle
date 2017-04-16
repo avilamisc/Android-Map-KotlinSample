@@ -10,7 +10,7 @@ android {
     defaultConfig {
         vectorDrawables.useSupportLibrary = true
 
-        resValue("string", "map_api", "AIzaSyB2KtNjr88AxwuRiN6i7TcUALUUGM9cJp4")
+        resValue("string", "map_api", rootProject.ext.map_api)
 
         applicationId "com.github.devjn.kotlinmap"
         minSdkVersion 15

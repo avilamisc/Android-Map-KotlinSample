@@ -1,5 +1,5 @@
-platform :ios, ‘9.0’
+platform :ios, '9.3'
 
-target ‘KotlinMap’ do
+target 'KotlinMap' do
   pod 'GoogleMaps'
 end
