@@ -1,4 +1,4 @@
-# Android-Map-KotlinSample
-Android + Kotlin + DataBinding + Map Api + RX
+# GoogleMap-KotlinSample
+Android | iOS + Kotlin + DataBinding + Map Api + RX + MOE
 
 Using OpenMap geojson to show custom places on Google Map

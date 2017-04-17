@@ -10,7 +10,10 @@ public object Consts {
 
     const val defaultZoom: Float = 12f
 
-    public val testLat: Double = 60.178
-    public val testLng: Double = 24.928
+    const val testLat: Double = 60.178
+    const val testLng: Double = 24.928
+
+    const val NEAR_VERSION = "NEAR_VERSION"
+    const val MAP_FILENAME = "mapPlaces"
 
 }

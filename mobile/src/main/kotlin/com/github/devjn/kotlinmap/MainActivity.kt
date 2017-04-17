@@ -292,7 +292,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val pos = LatLng(testLat, testLng)
 
         enableMyLocation()
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(pos, 13f))
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(pos, Consts.defaultZoom))
 
 //        map.setOnMarkerClickListener { marker ->
 //            updateBottomSheetContent(marker)
@@ -500,7 +500,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         if (mGoogleMap == null || result == null) return
         mClusterManager.addItems(result);
         UIUtils.runOnUIThread(Runnable {
-            mGoogleMap!!.moveCamera(CameraUpdateFactory.newLatLngZoom(mGoogleMap!!.cameraPosition.target, 12f))
+            mGoogleMap!!.animateCamera(CameraUpdateFactory.newLatLngZoom(mGoogleMap!!.cameraPosition.target, 11f))
             Toast.makeText(applicationContext, R.string.location_updated, Toast.LENGTH_SHORT).show()
         })
     }
@@ -531,7 +531,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             lng = testLng
         }
         Log.i(TAG, "Search click, lat= $lat, lng= $lng")
-        mGoogleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(testLat, testLng), 14f))
+        mGoogleMap?.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(testLat, testLng), 14f))
         showBottomList(lat, lng)
     }
 

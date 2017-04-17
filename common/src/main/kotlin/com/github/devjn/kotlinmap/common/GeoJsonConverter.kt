@@ -1,12 +1,13 @@
-package com.github.devjn.kotlinmap
+package com.github.devjn.kotlinmap.common
 
 import com.github.devjn.kotlinmap.common.PlaceClusterItem
-import com.github.devjn.kotlinmap.common.PlacePoint
-import com.github.devjn.kotlinmap.utils.Helper
+import com.github.devjn.kotlinmap.common.utils.CommonUtils
 import com.github.filosganga.geogson.gson.GeometryAdapterFactory
 import com.github.filosganga.geogson.model.FeatureCollection
 import com.github.filosganga.geogson.model.Geometry
 import com.google.gson.GsonBuilder
+import java.io.FileOutputStream
+import java.io.InputStream
 import java.util.*
 
 /**
@@ -27,13 +28,12 @@ class GeoJsonConverter {
 //        return LatLng(point.latitude, point.longitude)
 //    }
 
-    private fun readGson() {
+    private fun readGson(inputStream: InputStream) {
         val gson = GsonBuilder()
                 .registerTypeAdapterFactory(GeometryAdapterFactory())
                 .create()
 
-        val inputStream = Common.applicationContext.resources.openRawResource(R.raw.export)
-        val fileContent = Helper.readTextFile(inputStream)
+        val fileContent = CommonUtils.readTextFile(inputStream)
         val featureCollection = gson.fromJson(fileContent, FeatureCollection::class.java)
         for (feature in featureCollection.features()) {
             if (feature.geometry().type() == Geometry.Type.POINT || feature.geometry() is com.github.filosganga.geogson.model.Point) {
@@ -48,14 +48,14 @@ class GeoJsonConverter {
 
     companion object {
 
-        fun ConvertLocalJson(): List<PlaceClusterItem> {
+        fun ConvertLocalJson(inputStream: InputStream, outputStream: FileOutputStream): List<PlaceClusterItem> {
             val mapObjects = ArrayList<PlaceClusterItem>()
             val geoJsonConverter = GeoJsonConverter()
-            geoJsonConverter.readGson()
+            geoJsonConverter.readGson(inputStream)
             geoJsonConverter.initGeo(mapObjects)
             val gson = GsonBuilder().create()
             val file = gson.toJson(mapObjects)
-            Helper.write(Common.MAP_FILENAME, file)
+            CommonUtils.write(Consts.MAP_FILENAME, file, outputStream)
 //            Helper.copyFileToDir(Common.MAP_FILENAME, File(Common.applicationContext.filesDir.path + File.separator + Common.MAP_FILENAME))
             return mapObjects
         }

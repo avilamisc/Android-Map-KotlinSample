@@ -1,1 +1,0 @@
-{"output":"src/main/java","platform":"iOS","bindings":[{"type":"header","name":"MapsViewController","objcClassGenerationMode":"Binding","headerPath":"xcode/KotlinMap","headerSearchPaths":[],"userHeaderSearchPaths":[],"frameworkSearchPaths":[],"packageBase":"com.github.devjn.kotlinmap","importCode":"#import \"MapsViewController.h\""}]}

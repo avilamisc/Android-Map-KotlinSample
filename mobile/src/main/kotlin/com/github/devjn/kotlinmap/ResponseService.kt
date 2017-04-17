@@ -1,11 +1,14 @@
 package com.github.devjn.kotlinmap
 
+import android.content.Context
 import android.util.Log
 import com.github.devjn.kotlinmap.LocationService.Companion.retrofit
+import com.github.devjn.kotlinmap.common.Consts
+import com.github.devjn.kotlinmap.common.GeoJsonConverter
 import com.github.devjn.kotlinmap.common.PlaceClusterItem
 import com.github.devjn.kotlinmap.common.PlacePoint
-import com.github.devjn.kotlinmap.utils.Helper
 import com.github.devjn.kotlinmap.common.services.ServerRespose
+import com.github.devjn.kotlinmap.utils.Helper
 import com.google.android.gms.maps.model.LatLng
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -61,7 +64,7 @@ class ResponseService {
                 Log.i(TAG, "getAllCallback response: " + result)
                 val gson = GsonBuilder().create()
                 val file = gson.toJson(mapObjects)
-                Helper.writeAsync(Common.MAP_FILENAME, file)
+                Helper.writeAsync(Consts.MAP_FILENAME, file)
                 Common.placesVersion = mapAll.version
                 mPlacesVersion = mapAll.version
             }
@@ -103,11 +106,11 @@ class ResponseService {
 
     private fun checkLocal() {
         Schedulers.io().createWorker().schedule(Action0 {
-            val file = File(Common.applicationContext.filesDir.path + File.separator + Common.MAP_FILENAME)
+            val file = File(Common.applicationContext.filesDir.path + File.separator + Consts.MAP_FILENAME)
             if (file.exists()) {
                 try {
                     val gson = Gson()
-                    val jsonFile = read(Common.MAP_FILENAME)
+                    val jsonFile = read(Consts.MAP_FILENAME)
                     val listType = object : TypeToken<List<PlaceClusterItem>>() {}.type
                     mapObjects = gson.fromJson<List<PlaceClusterItem>>(jsonFile, listType)
                     world = FeSimpleGeoProx(mapObjects)
@@ -122,7 +125,8 @@ class ResponseService {
             } else {
                 Log.e(TAG, "Map file doesn't exist")
                 Schedulers.io().createWorker().schedule(Action0 {
-                    mapObjects = GeoJsonConverter.ConvertLocalJson();
+                    mapObjects = GeoJsonConverter.ConvertLocalJson(Common.applicationContext.resources.openRawResource(R.raw.export),
+                            Common.applicationContext.openFileOutput(Consts.MAP_FILENAME, Context.MODE_PRIVATE));
                     world = FeSimpleGeoProx(mapObjects)
                     mListener?.onLocationResult(mapObjects)
                     Log.i(TAG, "world created, size= " + mapObjects!!.size + " content: " + mapObjects)

@@ -48,7 +48,9 @@ ext {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile project(':common')
+    compile(project(':common')) {
+        exclude module: 'fesimplegeoprox-android-maps'
+    }
     // kotlin std lib
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
     compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
@@ -70,10 +72,9 @@ dependencies {
     compile 'io.reactivex:rxandroid:1.2.1'
     compile 'com.minimize.android:rxrecycler-adapter:1.2.2'
 
+    compile 'com.github.devjn:fesimplegeoprox-android-maps:v1.0'
     compile 'com.google.maps.android:android-maps-utils:0.5'
-    compile 'com.github.filosganga:geogson-core:1.1.100'
     compile 'com.github.bumptech.glide:glide:3.7.0'
-    compile files('libs/simplelatlng-1.3.1.jar')
 
     testCompile 'junit:junit:4.12'
 }

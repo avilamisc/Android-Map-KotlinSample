@@ -10,6 +10,7 @@ import android.net.Uri
 import android.os.Handler
 import android.preference.PreferenceManager
 import android.widget.Toast
+import com.github.devjn.kotlinmap.common.Consts.NEAR_VERSION
 import rx.schedulers.Schedulers
 import java.text.SimpleDateFormat
 import java.util.*
@@ -40,9 +41,6 @@ class Common : Application() {
         private val BAR_COLOR = "BAR_COLOR"
         private val THEME_IMAGE = "THEME_IMAGE"
 
-        public val PROFILE_IMAGE_PATH = "Profile_Image"
-        public val NEAR_VERSION = "NEAR_VERSION"
-        public val MAP_FILENAME = "mapPlaces"
 
         /**
          * Request code for location permission request.

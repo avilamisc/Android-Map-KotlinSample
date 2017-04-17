@@ -1,48 +1,27 @@
 package com.github.devjn.kotlinmap.ui
 
 
-import com.github.devjn.kotlinmap.common.Consts
-
-import apple.NSObject
 import apple.coregraphics.c.CoreGraphics
-import apple.coregraphics.struct.CGPoint
-import apple.coregraphics.struct.CGRect
 import apple.corelocation.struct.CLLocationCoordinate2D
-import apple.foundation.NSArray
-import apple.foundation.NSBundle
-import apple.foundation.NSCoder
-import apple.foundation.NSMethodSignature
-import apple.foundation.NSSet
 import apple.uikit.UISearchController
 import apple.uikit.UIView
 import apple.uikit.UIViewController
 import apple.uikit.protocol.UISearchBarDelegate
 import apple.uikit.protocol.UISearchControllerDelegate
 import apple.uikit.protocol.UISearchResultsUpdating
-
+import com.github.devjn.kotlinmap.common.Consts
 import org.moe.googlemaps.GMSCameraPosition
 import org.moe.googlemaps.GMSMapView
 import org.moe.googlemaps.GMSMarker
 import org.moe.googlemaps.GMSServices
-import org.moe.natj.c.ann.FunctionPtr
 import org.moe.natj.general.NatJ
 import org.moe.natj.general.Pointer
-import org.moe.natj.general.ann.Generated
-import org.moe.natj.general.ann.Mapped
-import org.moe.natj.general.ann.MappedReturn
-import org.moe.natj.general.ann.NInt
-import org.moe.natj.general.ann.NUInt
 import org.moe.natj.general.ann.Owned
 import org.moe.natj.general.ann.RegisterOnStartup
 import org.moe.natj.general.ann.Runtime
-import org.moe.natj.general.ptr.VoidPtr
-import org.moe.natj.objc.Class
 import org.moe.natj.objc.ObjCRuntime
-import org.moe.natj.objc.SEL
-import org.moe.natj.objc.ann.ObjCClassBinding
 import org.moe.natj.objc.ann.ObjCClassName
 import org.moe.natj.objc.ann.Selector
-import org.moe.natj.objc.map.ObjCObjectMapper
 
 
 //@ObjCClassBinding
@@ -57,7 +36,7 @@ protected constructor(peer: Pointer) : UIViewController(peer), UISearchControlle
 
     val containerView = UIView.alloc().init()
     internal lateinit var mapView: GMSMapView
-    internal lateinit var searchController : UISearchController
+    internal lateinit var searchController: UISearchController
 
     override fun viewDidLoad() {
         super.viewDidLoad()
@@ -104,7 +83,7 @@ protected constructor(peer: Pointer) : UIViewController(peer), UISearchControlle
     }
 
     override fun updateSearchResultsForSearchController(searchController: UISearchController?) {
-
+        println("--- updateSearchResultsForSearchController");
     }
 
 

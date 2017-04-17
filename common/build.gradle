@@ -12,6 +12,7 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 
     compile 'com.github.devjn:fesimplegeoprox-android-maps:common-v1.0'
+    compile 'com.github.filosganga:geogson-core:1.1.100'
     compile 'com.squareup.retrofit2:retrofit:2.1.0'
     compile 'com.squareup.retrofit2:converter-gson:2.1.0'
     compile 'com.google.code.gson:gson:2.8.0'

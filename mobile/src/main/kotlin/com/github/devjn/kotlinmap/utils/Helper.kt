@@ -11,11 +11,10 @@ import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.github.devjn.kotlinmap.Common
 import com.github.devjn.kotlinmap.R
-import com.github.devjn.kotlinmap.readWhile
+import com.github.devjn.kotlinmap.common.utils.CommonUtils
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonParser
-import rx.schedulers.Schedulers
 import java.io.*
 
 /**
@@ -68,27 +67,11 @@ object Helper {
     }
 
     fun write(filename: String, file: String) {
-        val outputStream: FileOutputStream
-        try {
-            outputStream = Common.applicationContext.openFileOutput(filename, Context.MODE_PRIVATE)
-            outputStream.write(file.toByteArray(charset("UTF-8")))
-            outputStream.close()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+        CommonUtils.write(filename, file, Common.applicationContext.openFileOutput(filename, Context.MODE_PRIVATE))
     }
 
     fun writeAsync(filename: String, file: String) {
-        Schedulers.io().createWorker().schedule {
-            val outputStream: FileOutputStream
-            try {
-                outputStream = Common.applicationContext.openFileOutput(filename, Context.MODE_PRIVATE)
-                outputStream.write(file.toByteArray(charset("UTF-8")))
-                outputStream.close()
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
+        CommonUtils.writeAsync(filename, file, Common.applicationContext.openFileOutput(filename, Context.MODE_PRIVATE))
     }
 
     fun copyFileToDir(fileName: String, file: File) {
@@ -160,21 +143,6 @@ object Helper {
         return prettyJson
     }
 
-    fun readTextFile(inputStream: InputStream): String {
-        val isr = InputStreamReader(inputStream)
-        val bufferedReader = BufferedReader(isr)
-        val sb = StringBuilder()
-
-        bufferedReader.readWhile { it != 1 }.forEach {
-            sb.append(it)
-        }
-
-        bufferedReader.close()
-        isr.close()
-        inputStream.close()
-        return sb.toString()
-    }
-
     /**
 
      * @param activity
@@ -191,15 +159,4 @@ object Helper {
         activity.startActivity(mapIntent)
     }
 
-}
-
-inline fun BufferedReader.readWhile(crossinline predicate: (Int) -> Boolean): Sequence<Char> {
-    return generateSequence {
-        val c = this.read()
-        if (c != -1 && predicate(c)) {
-            c.toChar()
-        } else {
-            null
-        }
-    }
 }
