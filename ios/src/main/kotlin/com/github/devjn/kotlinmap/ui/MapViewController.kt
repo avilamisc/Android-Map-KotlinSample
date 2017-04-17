@@ -48,9 +48,9 @@ import org.moe.natj.objc.ann.Property
 import org.moe.natj.objc.ann.Selector
 
 @org.moe.natj.general.ann.Runtime(ObjCRuntime::class)
-@ObjCClassName("MapsViewController")
+@ObjCClassName("MapViewController")
 @RegisterOnStartup
-class MapsViewController protected constructor(peer: Pointer) : UIViewController(peer), GMSMapViewDelegate, UISearchBarDelegate, LocationManagerDelegate {
+class MapViewController protected constructor(peer: Pointer) : UIViewController(peer), GMSMapViewDelegate, UISearchBarDelegate, LocationManagerDelegate {
 
     internal interface MapsViewControllerCallback {
         fun onLocationPicked(coordinate: CLLocationCoordinate2D, address: String)
@@ -63,7 +63,7 @@ class MapsViewController protected constructor(peer: Pointer) : UIViewController
     private var address = ""
 
     @Selector("init")
-    override external fun init(): MapsViewController
+    override external fun init(): MapViewController
 
     private var mapView: GMSMapView? = null
         @Selector("mapView")
@@ -195,6 +195,6 @@ class MapsViewController protected constructor(peer: Pointer) : UIViewController
     companion object {
 
         @Selector("alloc")
-        @JvmStatic external fun alloc(): MapsViewController
+        @JvmStatic external fun alloc(): MapViewController
     }
 }

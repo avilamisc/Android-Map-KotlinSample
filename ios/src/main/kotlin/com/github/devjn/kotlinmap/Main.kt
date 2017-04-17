@@ -8,7 +8,7 @@ import apple.uikit.UIScreen
 import apple.uikit.UIWindow
 import apple.uikit.c.UIKit
 import apple.uikit.protocol.UIApplicationDelegate
-import com.github.devjn.kotlinmap.ui.MapsViewController
+import com.github.devjn.kotlinmap.ui.MapViewController
 import org.moe.googlemaps.GMSServices
 
 import org.moe.natj.general.Pointer
@@ -26,7 +26,7 @@ class Main protected constructor(peer: Pointer) : NSObject(peer), UIApplicationD
         val result = GMSServices.provideAPIKey(key)
         println("provideAPIKey result: " + if (result) "YES" else "NO")
 
-        val vc = MapsViewController.alloc().init()
+/*        val vc = MapsViewController.alloc().init()
         val navigationController = UINavigationController.alloc().init()
 
         navigationController.initWithRootViewController(vc)
@@ -38,7 +38,7 @@ class Main protected constructor(peer: Pointer) : NSObject(peer), UIApplicationD
 
         window!!.setRootViewController(navigationController)
 
-        window!!.makeKeyAndVisible()
+        window!!.makeKeyAndVisible()*/
 
         return true
     }

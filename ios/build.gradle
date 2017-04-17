@@ -54,7 +54,7 @@ dependencies {
     compile project(':common')
 
     // Add Kotlin dependency
-    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
 }
 
 sourceSets {

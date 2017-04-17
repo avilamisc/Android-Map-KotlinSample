@@ -6,9 +6,9 @@ package com.github.devjn.kotlinmap.common
  * devjn@jn-arts.com
  * Consts.kt
  */
-object Consts {
+public object Consts {
 
-    public val defaultZoom: Float = 12f
+    const val defaultZoom: Float = 12f
 
     public val testLat: Double = 12.0
     public val testLng: Double = 12.0

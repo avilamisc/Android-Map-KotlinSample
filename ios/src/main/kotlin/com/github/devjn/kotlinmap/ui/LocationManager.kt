@@ -37,7 +37,7 @@ import apple.corelocation.protocol.CLLocationManagerDelegate
 import apple.foundation.NSArray
 import apple.foundation.NSError
 
-class LocationManager : CLLocationManagerDelegate {
+public class LocationManager : CLLocationManagerDelegate {
 
     enum class State {
         Stopped,
@@ -132,10 +132,12 @@ class LocationManager : CLLocationManagerDelegate {
 
     companion object {
 
-        val LOCATION_WARNING = "You should enable Location Service in your Simulator: Debug > Location."
+        const val LOCATION_WARNING = "You should enable Location Service in your Simulator: Debug > Location."
 
+        @JvmStatic
         var sharedManager: LocationManager
             private set
+            external get
 
         init {
             sharedManager = LocationManager()
