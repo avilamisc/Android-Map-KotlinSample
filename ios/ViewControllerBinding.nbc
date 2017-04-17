@@ -1,0 +1,1 @@
+{"output":"src/main/java","platform":"iOS","bindings":[{"type":"header","name":"ViewController","objcClassGenerationMode":"Binding","headerPath":"xcode/KotlinMap","headerSearchPaths":[],"userHeaderSearchPaths":[],"frameworkSearchPaths":[],"packageBase":"com.github.devjn.kotlinmap.ui","importCode":"#import \"ViewController.h\""}]}
