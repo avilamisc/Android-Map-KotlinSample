@@ -11,9 +11,9 @@
 		3DBBD9857F91219D7CD5F549 /* moe-main-interfaces.m in Sources */ = {isa = PBXBuildFile; fileRef = B4E898BD8FA9F8126B077341 /* moe-main-interfaces.m */; };
 		58C6F5341DA66CB600309CB6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 58C6F5331DA66CB600309CB6 /* Assets.xcassets */; };
 		58C6F5371DA66CB600309CB6 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 58C6F5351DA66CB600309CB6 /* LaunchScreen.storyboard */; };
-		845AAD6D1EA403030020DA19 /* MapsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 845AAD6C1EA403030020DA19 /* MapsViewController.m */; };
-		84A965721EA392EA003CFAE9 /* Storyboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 84A965701EA392EA003CFAE9 /* Storyboard.storyboard */; };
 		84C6D218706A0C06DE974031 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E09062B7F80D8D36E51F9402 /* main.cpp */; };
+		84D82C081EA5370800746558 /* Storyboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 84D82C061EA5370800746558 /* Storyboard.storyboard */; };
+		84D82C0B1EA5389800746558 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 84D82C0A1EA5389800746558 /* ViewController.m */; };
 		881D45D1791293840CF48205 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0E03F1E45C6461E1E1CAEAEE /* main.cpp */; };
 /* End PBXBuildFile section */
 
@@ -26,9 +26,9 @@
 		58C6F5361DA66CB600309CB6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		58C6F5381DA66CB600309CB6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		74A80444E46F4E01B86C45B2 /* libPods-KotlinMap.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-KotlinMap.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		845AAD6B1EA403030020DA19 /* MapsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapsViewController.h; sourceTree = "<group>"; };
-		845AAD6C1EA403030020DA19 /* MapsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapsViewController.m; sourceTree = "<group>"; };
-		84A965711EA392EA003CFAE9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Storyboard.storyboard; sourceTree = "<group>"; };
+		84D82C071EA5370800746558 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = KotlinMap/Base.lproj/Storyboard.storyboard; sourceTree = "<group>"; };
+		84D82C091EA5389800746558 /* ViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
+		84D82C0A1EA5389800746558 /* ViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		B4E898BD8FA9F8126B077341 /* moe-main-interfaces.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = "moe-main-interfaces.m"; path = "../build/moe/main/ui-headers/moe-main-interfaces.m"; sourceTree = "<group>"; };
 		CCFFA0C760D6ACD89C281562 /* Pods-KotlinMap.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-KotlinMap.release.xcconfig"; path = "Pods/Target Support Files/Pods-KotlinMap/Pods-KotlinMap.release.xcconfig"; sourceTree = "<group>"; };
 		D8E60CE804A6DD2EBAA95701 /* Pods-KotlinMap.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-KotlinMap.debug.xcconfig"; path = "Pods/Target Support Files/Pods-KotlinMap/Pods-KotlinMap.debug.xcconfig"; sourceTree = "<group>"; };
@@ -113,11 +113,11 @@
 			children = (
 				58C6F5331DA66CB600309CB6 /* Assets.xcassets */,
 				58C6F5351DA66CB600309CB6 /* LaunchScreen.storyboard */,
-				84A965701EA392EA003CFAE9 /* Storyboard.storyboard */,
-				845AAD6B1EA403030020DA19 /* MapsViewController.h */,
-				845AAD6C1EA403030020DA19 /* MapsViewController.m */,
+				84D82C061EA5370800746558 /* Storyboard.storyboard */,
 				58C6F5381DA66CB600309CB6 /* Info.plist */,
 				58C6F5271DA66CB600309CB6 /* Supporting Files */,
+				84D82C091EA5389800746558 /* ViewController.h */,
+				84D82C0A1EA5389800746558 /* ViewController.m */,
 			);
 			path = KotlinMap;
 			sourceTree = "<group>";
@@ -187,7 +187,7 @@
 		58C6F51C1DA66CB600309CB6 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0730;
+				LastUpgradeCheck = 0830;
 				ORGANIZATIONNAME = github.devjn;
 				TargetAttributes = {
 					5863B87A1DA682C800E46B6A = {
@@ -232,7 +232,7 @@
 			files = (
 				58C6F5371DA66CB600309CB6 /* LaunchScreen.storyboard in Resources */,
 				58C6F5341DA66CB600309CB6 /* Assets.xcassets in Resources */,
-				84A965721EA392EA003CFAE9 /* Storyboard.storyboard in Resources */,
+				84D82C081EA5370800746558 /* Storyboard.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -327,9 +327,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				84D82C0B1EA5389800746558 /* ViewController.m in Sources */,
 				84C6D218706A0C06DE974031 /* main.cpp in Sources */,
 				3DBBD9857F91219D7CD5F549 /* moe-main-interfaces.m in Sources */,
-				845AAD6D1EA403030020DA19 /* MapsViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -344,12 +344,13 @@
 			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
 		};
-		84A965701EA392EA003CFAE9 /* Storyboard.storyboard */ = {
+		84D82C061EA5370800746558 /* Storyboard.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
-				84A965711EA392EA003CFAE9 /* Base */,
+				84D82C071EA5370800746558 /* Base */,
 			);
 			name = Storyboard.storyboard;
+			path = ..;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -439,8 +440,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -484,8 +487,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -516,6 +521,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				DEAD_CODE_STRIPPING = NO;
+				DEVELOPMENT_TEAM = S2XKAR4QCV;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -553,6 +559,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				DEAD_CODE_STRIPPING = NO;
+				DEVELOPMENT_TEAM = S2XKAR4QCV;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",

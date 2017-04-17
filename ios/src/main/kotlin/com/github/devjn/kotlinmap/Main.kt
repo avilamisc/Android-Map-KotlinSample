@@ -9,6 +9,7 @@ import apple.uikit.UIWindow
 import apple.uikit.c.UIKit
 import apple.uikit.protocol.UIApplicationDelegate
 import com.github.devjn.kotlinmap.ui.MapViewController
+import com.github.devjn.kotlinmap.ui.ViewController
 import org.moe.googlemaps.GMSServices
 
 import org.moe.natj.general.Pointer
@@ -21,12 +22,12 @@ class Main protected constructor(peer: Pointer) : NSObject(peer), UIApplicationD
     private var window: UIWindow? = null
 
     override fun applicationDidFinishLaunchingWithOptions(application: UIApplication?, launchOptions: NSDictionary<*, *>?): Boolean {
-        println("Google Maps SDK Version: " + GMSServices.SDKVersion().toString())
-        val key = "AIzaSyDBNHlacyZBHNJVbjv90p7vVE0VnflUTIE"
-        val result = GMSServices.provideAPIKey(key)
-        println("provideAPIKey result: " + if (result) "YES" else "NO")
+//        println("Google Maps SDK Version: " + GMSServices.SDKVersion().toString())
+//        val key = "AIzaSyDBNHlacyZBHNJVbjv90p7vVE0VnflUTIE"
+//        val result = GMSServices.provideAPIKey(key)
+//        println("provideAPIKey result: " + if (result) "YES" else "NO")
 
-/*        val vc = MapsViewController.alloc().init()
+        val vc = ViewController.alloc().init()
         val navigationController = UINavigationController.alloc().init()
 
         navigationController.initWithRootViewController(vc)
@@ -38,7 +39,7 @@ class Main protected constructor(peer: Pointer) : NSObject(peer), UIApplicationD
 
         window!!.setRootViewController(navigationController)
 
-        window!!.makeKeyAndVisible()*/
+        window!!.makeKeyAndVisible()
 
         return true
     }

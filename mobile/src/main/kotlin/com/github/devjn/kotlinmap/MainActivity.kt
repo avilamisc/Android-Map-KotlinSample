@@ -32,6 +32,7 @@ import android.view.View
 import android.widget.Toast
 import com.github.devjn.kotlinmap.Common.Companion.LOCATION_PERMISSION_REQUEST_CODE
 import com.github.devjn.kotlinmap.Common.Companion.STORAGE_PERMISSION_REQUEST_CODE
+import com.github.devjn.kotlinmap.common.Consts
 import com.github.devjn.kotlinmap.common.PlaceClusterItem
 import com.github.devjn.kotlinmap.common.PlacePoint
 import com.github.devjn.kotlinmap.databinding.ActivityMainBinding
@@ -76,8 +77,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private lateinit var mResponseService: ResponseService
     private var locationManager: LocationManager? = null
     private var provider: String? = null
-    private val testLat = 60.178
-    private val testLng = 24.928
+    private val testLat = Consts.testLat
+    private val testLng = Consts.testLng
 
     private val mMarkersMap = HashMap<Marker, PlaceClusterItem>(3)
     private lateinit var mClusterManager: ClusterManager<PlaceClusterItem>

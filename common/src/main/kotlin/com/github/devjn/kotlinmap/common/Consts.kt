@@ -10,7 +10,7 @@ public object Consts {
 
     const val defaultZoom: Float = 12f
 
-    public val testLat: Double = 12.0
-    public val testLng: Double = 12.0
+    public val testLat: Double = 60.178
+    public val testLng: Double = 24.928
 
 }
