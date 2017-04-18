@@ -41,9 +41,6 @@ captures/
 # Keystore files
 *.jks
 
-# GitHub linguist
-ios/xcode/Pods/* linguist-vendored
-
 
 /local.properties
 /.idea/libraries
