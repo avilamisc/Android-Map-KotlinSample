@@ -14,10 +14,10 @@
             buildForArchiving = "YES">
             <BuildableReference
                BuildableIdentifier = 'primary'
-               BlueprintIdentifier = 'AD00FFE9A13E14CBE281A5032FEDB564'
-               BlueprintName = 'Pods-KotlinMap'
+               BlueprintIdentifier = 'A4F8C2DC4FB48FE107D72076069E2459'
+               BlueprintName = 'Google-Maps-iOS-Utils'
                ReferencedContainer = 'container:Pods.xcodeproj'
-               BuildableName = 'libPods-KotlinMap.a'>
+               BuildableName = 'libGoogle-Maps-iOS-Utils.a'>
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
