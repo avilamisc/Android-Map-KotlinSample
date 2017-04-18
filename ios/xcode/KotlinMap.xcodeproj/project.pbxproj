@@ -600,7 +600,7 @@
 				5863B8911DA682C800E46B6A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 		58C6F51F1DA66CB600309CB6 /* Build configuration list for PBXProject "KotlinMap" */ = {
 			isa = XCConfigurationList;
@@ -609,7 +609,7 @@
 				58C6F53A1DA66CB600309CB6 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 		58C6F53B1DA66CB600309CB6 /* Build configuration list for PBXNativeTarget "KotlinMap" */ = {
 			isa = XCConfigurationList;
@@ -618,7 +618,7 @@
 				58C6F53D1DA66CB600309CB6 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
 	};

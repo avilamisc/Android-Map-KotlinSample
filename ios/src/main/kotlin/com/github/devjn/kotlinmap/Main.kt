@@ -16,7 +16,7 @@ import org.moe.natj.objc.ann.Selector
 @RegisterOnStartup
 class Main protected constructor(peer: Pointer) : NSObject(peer), UIApplicationDelegate {
 
-    private lateinit var window: UIWindow
+    private var window: UIWindow? = null
 
     override fun applicationDidFinishLaunchingWithOptions(application: UIApplication?, launchOptions: NSDictionary<*, *>?): Boolean {
 //        println("Google Maps SDK Version: " + GMSServices.SDKVersion().toString())
@@ -34,15 +34,14 @@ class Main protected constructor(peer: Pointer) : NSObject(peer), UIApplicationD
         val bounds = screen.bounds()
         window = UIWindow.alloc().initWithFrame(bounds)
 
-        window.setRootViewController(navigationController)
-
-        window.makeKeyAndVisible()
+        window!!.setRootViewController(navigationController)
+        window!!.makeKeyAndVisible()
 
         return true
     }
 
     override fun setWindow(value: UIWindow?) {
-        window = value!!
+        window = value
     }
 
     override fun window(): UIWindow? {
