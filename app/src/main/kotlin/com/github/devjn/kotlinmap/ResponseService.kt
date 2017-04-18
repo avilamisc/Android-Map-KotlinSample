@@ -26,8 +26,10 @@ import java.io.IOException
 import java.io.InputStreamReader
 
 /**
- * Created by Jahongir on 06-Nov-16.
- */
+* Created by @author Jahongir on 06-Nov-16
+* devjn@jn-arts.com
+* ResponseService.kt
+*/
 
 class ResponseService {
 

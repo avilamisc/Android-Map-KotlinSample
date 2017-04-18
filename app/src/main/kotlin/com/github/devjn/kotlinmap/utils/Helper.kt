@@ -17,14 +17,6 @@ import com.google.gson.GsonBuilder
 import com.google.gson.JsonParser
 import java.io.*
 
-/**
- * Created by @author Jahongir on ${date}
- *
- *
- * $Helper
- */
-
-
 @BindingAdapter("bind:imageUrl")
 fun loadImage(imageView: ImageView, v: String) {
     val suffix = "_img_01.jpg"
@@ -37,6 +29,12 @@ fun loadSampleImage(imageView: ImageView, v: String?) {
     Glide.with(imageView.context).load(R.drawable.img_kotlin_feature).into(imageView)
 }
 
+/**
+ * Created by @author Jahongir on 06-Nov-16
+ *
+ *
+ * $Helper.kt
+ */
 object Helper {
 
     val TAG = Helper::class.java.kotlin.simpleName;

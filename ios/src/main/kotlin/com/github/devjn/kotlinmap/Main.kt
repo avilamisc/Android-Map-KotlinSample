@@ -8,10 +8,7 @@ import apple.uikit.UIScreen
 import apple.uikit.UIWindow
 import apple.uikit.c.UIKit
 import apple.uikit.protocol.UIApplicationDelegate
-import com.github.devjn.kotlinmap.ui.MapViewController
 import com.github.devjn.kotlinmap.ui.ViewController
-import org.moe.googlemaps.GMSServices
-
 import org.moe.natj.general.Pointer
 import org.moe.natj.general.ann.RegisterOnStartup
 import org.moe.natj.objc.ann.Selector
@@ -19,7 +16,7 @@ import org.moe.natj.objc.ann.Selector
 @RegisterOnStartup
 class Main protected constructor(peer: Pointer) : NSObject(peer), UIApplicationDelegate {
 
-    private var window: UIWindow? = null
+    private lateinit var window: UIWindow
 
     override fun applicationDidFinishLaunchingWithOptions(application: UIApplication?, launchOptions: NSDictionary<*, *>?): Boolean {
 //        println("Google Maps SDK Version: " + GMSServices.SDKVersion().toString())
@@ -37,15 +34,15 @@ class Main protected constructor(peer: Pointer) : NSObject(peer), UIApplicationD
         val bounds = screen.bounds()
         window = UIWindow.alloc().initWithFrame(bounds)
 
-        window!!.setRootViewController(navigationController)
+        window.setRootViewController(navigationController)
 
-        window!!.makeKeyAndVisible()
+        window.makeKeyAndVisible()
 
         return true
     }
 
     override fun setWindow(value: UIWindow?) {
-        window = value
+        window = value!!
     }
 
     override fun window(): UIWindow? {

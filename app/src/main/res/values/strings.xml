@@ -53,5 +53,7 @@
     <string name="location_not_available">Location is not available</string>
     <string name="location_updated">Location places updated</string>
 
+    <string name="lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur vestibulum turpis sapien, vulputate pharetra neque lobortis sed. Ut dictum turpis velit, quis consectetur leo consequat at. Sed nec sodales velit, non varius nunc. Aenean sed tortor eros. Cras nec lorem sit amet lacus dictum fringilla. Praesent varius cursus consectetur. Mauris interdum, diam sit amet eleifend tempor, diam dui facilisis lorem, sed volutpat nisl magna non erat. Donec feugiat dignissim erat, nec ornare ipsum porta at. Phasellus vel velit rhoncus, blandit quam sed, efficitur nisl. Praesent cursus vulputate mi at rhoncus. In hac habitasse platea dictumst. Pellentesque urna neque, fringilla id semper at, condimentum in odio. Nullam congue ligula nibh, ac aliquam ligula aliquet nec. Pellentesque dapibus augue quis odio commodo, ac interdum urna volutpat.</string>
+
 
 </resources>

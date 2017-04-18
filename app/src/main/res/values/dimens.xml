@@ -12,4 +12,5 @@
     <dimen name="material_padding_8dp">8dp</dimen>
 
     <dimen name="horizontal_small_margin">8dp</dimen>
+    <dimen name="normal_margin">16dp</dimen>
 </resources>
