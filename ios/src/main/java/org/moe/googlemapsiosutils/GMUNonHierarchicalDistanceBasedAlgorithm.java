@@ -24,11 +24,12 @@ import org.moe.natj.objc.SEL;
 import org.moe.natj.objc.ann.ObjCClassBinding;
 import org.moe.natj.objc.ann.Selector;
 import org.moe.natj.objc.map.ObjCObjectMapper;
+import org.moe.natj.general.ann.RegisterOnStartup;
+import org.moe.natj.objc.ann.ObjCClassName;
 
-@Generated
+@ObjCClassName("GMUNonHierarchicalDistanceBasedAlgorithm") @RegisterOnStartup @Generated
 @Library("xcode/Pods/GoogleMaps/Maps/Frameworks/GoogleMaps.framework")
 @Runtime(ObjCRuntime.class)
-@ObjCClassBinding
 public class GMUNonHierarchicalDistanceBasedAlgorithm extends NSObject
 		implements GMUClusterAlgorithm {
 	static {

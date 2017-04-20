@@ -8,10 +8,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.databinding.DataBindingUtil
 import android.graphics.drawable.Drawable
-import android.location.Criteria
-import android.location.Location
-import android.location.LocationListener
-import android.location.LocationManager
+import android.location.*
 import android.os.Bundle
 import android.support.design.widget.BottomSheetBehavior
 import android.support.design.widget.NavigationView
@@ -25,6 +22,7 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.app.AppCompatDelegate
 import android.support.v7.widget.SearchView
 import android.text.Html
+import android.text.TextUtils
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -36,9 +34,7 @@ import com.github.devjn.kotlinmap.common.Consts
 import com.github.devjn.kotlinmap.common.PlaceClusterItem
 import com.github.devjn.kotlinmap.common.PlacePoint
 import com.github.devjn.kotlinmap.common.services.ResponseService
-import com.github.devjn.kotlinmap.common.utils.NativeUtils
 import com.github.devjn.kotlinmap.databinding.ActivityMainBinding
-import com.github.devjn.kotlinmap.utils.AndroidUtils
 import com.github.devjn.kotlinmap.utils.PermissionUtils
 import com.github.devjn.kotlinmap.utils.UIUtils
 import com.github.devjn.kotlinmap.utils.UIUtils.getBitmap
@@ -197,6 +193,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
         if (searchView != null) {
             searchView.setSearchableInfo(searchManager.getSearchableInfo(this@MainActivity.componentName))
+            searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                override fun onQueryTextSubmit(query: String?): Boolean = false
+
+                override fun onQueryTextChange(newText: String?): Boolean {
+                    if(!TextUtils.isEmpty(newText)) {
+                        onMapSearch(newText!!);
+                    }
+                    return true
+                }
+            })
         }
         return true
     }
@@ -311,6 +317,22 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         setUpClusterer()
     }
+
+    fun onMapSearch(query: String) {
+        var addressList: List<Address>? = null
+        val geocoder:Geocoder = Geocoder(this);
+        try {
+            addressList = geocoder.getFromLocationName(query, 1);
+        } catch (e: IOException) {
+            Log.e(TAG, "Cannot get location, exception: "+e)
+        }
+        if(addressList == null) return
+        val address = addressList.get(0);
+        val latLng = LatLng(address.getLatitude(), address.getLongitude());
+        mGoogleMap!!.addMarker(MarkerOptions().position(latLng).title(address.featureName ?: "Search place"));
+        mGoogleMap!!.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+    }
+
 
     private fun setUpClusterer() {
         // Initialize the manager with the context and the map.

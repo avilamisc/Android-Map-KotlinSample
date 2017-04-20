@@ -4,8 +4,11 @@ package com.github.devjn.kotlinmap.ui
 import apple.NSObject
 import apple.c.Globals.arc4random
 import apple.coregraphics.c.CoreGraphics
+import apple.corelocation.CLGeocoder
+import apple.corelocation.CLPlacemark
 import apple.corelocation.c.CoreLocation.CLLocationCoordinate2DMake
 import apple.corelocation.struct.CLLocationCoordinate2D
+import apple.uikit.UISearchBar
 import apple.uikit.UISearchController
 import apple.uikit.UIView
 import apple.uikit.UIViewController
@@ -74,6 +77,8 @@ protected constructor(peer: Pointer) : UIViewController(peer), UISearchControlle
         marker.setMap(mapView)
 
         initSearchBar()
+        //Temp fix for ClassCastException
+        Class.forName(CLPlacemark::class.qualifiedName);
     }
 
     private fun initSearchBar() {
@@ -103,7 +108,7 @@ protected constructor(peer: Pointer) : UIViewController(peer), UISearchControlle
         val renderer = GMUDefaultClusterRenderer.alloc().init() // (mapView, iconGenerator);
         clusterManager = GMUClusterManager.alloc().initWithMapAlgorithmRenderer(mapView, algorithm, renderer)
 
-        // Generate and add random items to the cluster manager.
+        // Generate and add random items to the cluster manager. not working for now
 //        generateClusterItems()
 
         // Call cluster() after items have been added to perform the clustering
@@ -133,6 +138,27 @@ protected constructor(peer: Pointer) : UIViewController(peer), UISearchControlle
         println("--- updateSearchResultsForSearchController");
     }
 
+    override fun searchBarSearchButtonClicked(searchBar: UISearchBar) {
+        val query = searchBar.text()
+        if (query != null && query.isNotEmpty())
+            onMapSearch(query)
+    }
+
+    fun onMapSearch(address: String) {
+        val gc: CLGeocoder = CLGeocoder.alloc().init()
+
+        gc.geocodeAddressStringCompletionHandler(address) { placemarks, error ->
+            if(placemarks == null) return@geocodeAddressStringCompletionHandler
+            println("Found placemarks: $placemarks, error: $error")
+            val place: CLPlacemark = placemarks.get(0)
+            val marker = GMSMarker.alloc().init()
+            val loc = CLLocationCoordinate2D(place.location().coordinate().latitude(), place.location().coordinate().longitude());
+            marker.setPosition(loc)
+            marker.setTitle(place.name() ?: "Search place")
+            marker.setMap(mapView)
+            mapView.animateToLocation(loc)
+        }
+    }
 
     companion object {
         init {
