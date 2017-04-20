@@ -1,20 +1,21 @@
-package com.github.devjn.kotlinmap
+package com.github.devjn.kotlinmap.common.services
 
-import android.content.Context
-import android.util.Log
-import com.github.devjn.kotlinmap.LocationService.Companion.retrofit
 import com.github.devjn.kotlinmap.common.Consts
 import com.github.devjn.kotlinmap.common.GeoJsonConverter
 import com.github.devjn.kotlinmap.common.PlaceClusterItem
 import com.github.devjn.kotlinmap.common.PlacePoint
-import com.github.devjn.kotlinmap.common.services.ServerRespose
-import com.github.devjn.kotlinmap.utils.Helper
+import com.github.devjn.kotlinmap.common.services.LocationService
+import com.github.devjn.kotlinmap.common.services.LocationService.Companion.retrofit
+import com.github.devjn.kotlinmap.common.utils.CommonUtils
+import com.github.devjn.kotlinmap.common.utils.Log
+import com.github.devjn.kotlinmap.common.utils.NativeUtils
 import com.google.android.gms.maps.model.LatLng
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import com.javadocmd.simplelatlng.util.LengthUnit
 import org.ferriludium.simplegeoprox.FeSimpleGeoProx
+import org.pmw.tinylog.Logger
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -38,11 +39,11 @@ class ResponseService {
     }
 
     private var mPlacesVersion: Int = 0
-    private var locationService: LocationService? = null
+    private var locationService: LocationService
     private var mListener: LocationResultListener? = null
 
     constructor() {
-        mPlacesVersion = Common.placesVersion
+        mPlacesVersion = NativeUtils.resolver.placesVersion
         locationService = retrofit.create(LocationService::class.java)
         checkMapObjects()
     }
@@ -52,7 +53,7 @@ class ResponseService {
     }
 
     private fun checkMapObjects() {
-        val call = locationService!!.version
+        val call = locationService.version
         call.enqueue(versionCallback)
     }
 
@@ -63,11 +64,11 @@ class ResponseService {
             if (result is List<*>) {
                 mapObjects = result as List<PlaceClusterItem>
 //                world = FeSimpleGeoProx(mapObjects)
-                Log.i(TAG, "getAllCallback response: " + result)
+                Logger.info(TAG, "getAllCallback response: " + result)
                 val gson = GsonBuilder().create()
                 val file = gson.toJson(mapObjects)
-                Helper.writeAsync(Consts.MAP_FILENAME, file)
-                Common.placesVersion = mapAll.version
+                CommonUtils.writeAsync(Consts.MAP_FILENAME, file)
+                NativeUtils.resolver.placesVersion = mapAll.version
                 mPlacesVersion = mapAll.version
             }
         }
@@ -102,13 +103,13 @@ class ResponseService {
     }
 
     private fun requestNewVersion() {
-        val call = locationService!!.all
+        val call = locationService.all
         call.enqueue(getAllCallback)
     }
 
     private fun checkLocal() {
         Schedulers.io().createWorker().schedule(Action0 {
-            val file = File(Common.applicationContext.filesDir.path + File.separator + Consts.MAP_FILENAME)
+            val file = File(NativeUtils.resolver.mapFilePath)
             if (file.exists()) {
                 try {
                     val gson = Gson()
@@ -126,13 +127,11 @@ class ResponseService {
                 }
             } else {
                 Log.e(TAG, "Map file doesn't exist")
-                Schedulers.io().createWorker().schedule(Action0 {
-                    mapObjects = GeoJsonConverter.ConvertLocalJson(Common.applicationContext.resources.openRawResource(R.raw.export),
-                            Common.applicationContext.openFileOutput(Consts.MAP_FILENAME, Context.MODE_PRIVATE));
+                Schedulers.io().createWorker().schedule({
+                    mapObjects = GeoJsonConverter.ConvertLocalJson()
                     world = FeSimpleGeoProx(mapObjects)
                     mListener?.onLocationResult(mapObjects)
                     Log.i(TAG, "world created, size= " + mapObjects!!.size + " content: " + mapObjects)
-                    return@Action0
                 })
             }
             requestNewVersion()
@@ -144,7 +143,7 @@ class ResponseService {
             val result = world!!.find(LatLng(lat, lng), 1.0, LengthUnit.KILOMETER)
             mListener!!.onLocationResult(result as Collection<PlaceClusterItem>?)
         } else {
-            val call = locationService!!.nearLocations(lat, lng)
+            val call = locationService.nearLocations(lat, lng)
             call.enqueue(nearCallback)
         }
     }
@@ -154,7 +153,7 @@ class ResponseService {
             val result = world!!.find(LatLng(lat, lng), 1.0, LengthUnit.KILOMETER)
             listener.onLocationResult(result as Collection<PlaceClusterItem>?)
         } else {
-            val call = locationService!!.nearLocations(lat, lng)
+            val call = locationService.nearLocations(lat, lng)
             call.enqueue(object : Callback<Collection<PlaceClusterItem>> {
                 override fun onResponse(call: Call<Collection<PlaceClusterItem>>, response: Response<Collection<PlaceClusterItem>>) {
                     val result = response.body()
@@ -186,7 +185,7 @@ class ResponseService {
 
         @Throws(IOException::class)
         private fun read(filename: String): String {
-            val fis = Common.applicationContext.openFileInput(filename)
+            val fis = NativeUtils.resolver.openFileInputStreamFor(filename)
             val isr = InputStreamReader(fis)
             val bufferedReader = BufferedReader(isr)
             val sb = StringBuilder()

@@ -35,7 +35,10 @@ import com.github.devjn.kotlinmap.Common.Companion.STORAGE_PERMISSION_REQUEST_CO
 import com.github.devjn.kotlinmap.common.Consts
 import com.github.devjn.kotlinmap.common.PlaceClusterItem
 import com.github.devjn.kotlinmap.common.PlacePoint
+import com.github.devjn.kotlinmap.common.services.ResponseService
+import com.github.devjn.kotlinmap.common.utils.NativeUtils
 import com.github.devjn.kotlinmap.databinding.ActivityMainBinding
+import com.github.devjn.kotlinmap.utils.AndroidUtils
 import com.github.devjn.kotlinmap.utils.PermissionUtils
 import com.github.devjn.kotlinmap.utils.UIUtils
 import com.github.devjn.kotlinmap.utils.UIUtils.getBitmap
@@ -86,6 +89,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         this.binding = DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main)
+        binding.appBarMain.activity = this
         val toolbar = binding.appBarMain.toolbar
         setSupportActionBar(toolbar)
 
@@ -120,21 +124,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 .enableAutoManage(this, GOOGLE_API_CLIENT_ID, this)
                 .build()
 
-        val fab = binding.appBarMain.fab
-        fab.setOnClickListener { v ->
-            onPickButtonClick()
-            if (mGoogleApiClient.isConnected) {
-                if (ContextCompat.checkSelfPermission(this@MainActivity,
-                        Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(this@MainActivity,
-                            arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                            PERMISSIONS_REQUEST_CODE)
-                } else {
-                    //callPlaceDetectionApi();
-                }
-            } else
-                Log.e(TAG, "mGoogleApiClient is not connected")
-        }
         initLocationServices()
     }
 
@@ -178,6 +167,21 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         } else {
             super.onBackPressed()
         }
+    }
+
+    fun onFabClick(view: View) {
+        onPickButtonClick()
+        if (mGoogleApiClient.isConnected) {
+            if (ContextCompat.checkSelfPermission(this@MainActivity,
+                    Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this@MainActivity,
+                        arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                        PERMISSIONS_REQUEST_CODE)
+            } else {
+                //callPlaceDetectionApi();
+            }
+        } else
+            Log.e(TAG, "mGoogleApiClient is not connected")
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

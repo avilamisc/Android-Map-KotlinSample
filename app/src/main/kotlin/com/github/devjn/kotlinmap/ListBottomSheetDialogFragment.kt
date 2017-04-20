@@ -13,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.github.devjn.kotlinmap.common.PlaceClusterItem
 import com.github.devjn.kotlinmap.common.PlacePoint
+import com.github.devjn.kotlinmap.common.services.ResponseService
 import com.github.devjn.kotlinmap.databinding.FragmentListBottomsheetBinding
 import com.github.devjn.kotlinmap.databinding.ListItemCafeBinding
 import com.github.devjn.kotlinmap.utils.SimpleDividerItemDecoration

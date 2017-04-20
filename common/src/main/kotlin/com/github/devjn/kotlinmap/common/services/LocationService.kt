@@ -1,4 +1,4 @@
-package com.github.devjn.kotlinmap
+package com.github.devjn.kotlinmap.common.services
 
 import com.github.devjn.kotlinmap.common.PlaceClusterItem
 import com.github.devjn.kotlinmap.common.services.ServerRespose
@@ -9,8 +9,10 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 /**
- * Created by Jakhongir on 27.9.2016.
- */
+* Created by @author Jakhongir on 27.9.2016
+* devjn@jn-arts.com
+* LocationService.kt
+*/
 
 interface LocationService {
     @GET("places")

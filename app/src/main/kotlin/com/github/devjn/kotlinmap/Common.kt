@@ -11,6 +11,8 @@ import android.os.Handler
 import android.preference.PreferenceManager
 import android.widget.Toast
 import com.github.devjn.kotlinmap.common.Consts.NEAR_VERSION
+import com.github.devjn.kotlinmap.common.utils.NativeUtils
+import com.github.devjn.kotlinmap.utils.AndroidUtils
 import rx.schedulers.Schedulers
 import java.text.SimpleDateFormat
 import java.util.*
@@ -23,6 +25,7 @@ class Common : Application() {
         Companion.applicationContext = getApplicationContext()
         prefs = PreferenceManager.getDefaultSharedPreferences(this)
         applicationHandler = Handler(applicationContext!!.mainLooper)
+        NativeUtils.registerResolver(AndroidUtils())
     }
 
     companion object {

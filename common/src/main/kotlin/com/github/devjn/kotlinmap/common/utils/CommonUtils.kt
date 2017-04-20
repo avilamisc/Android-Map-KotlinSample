@@ -1,5 +1,6 @@
 package com.github.devjn.kotlinmap.common.utils
 
+import com.github.devjn.kotlinmap.common.utils.NativeUtils
 import rx.schedulers.Schedulers
 import java.io.BufferedReader
 import java.io.FileOutputStream
@@ -26,6 +27,28 @@ object CommonUtils {
 
     fun writeAsync(filename: String, file: String, outputStream: FileOutputStream) {
         Schedulers.io().createWorker().schedule {
+            try {
+                outputStream.write(file.toByteArray(charset("UTF-8")))
+                outputStream.close()
+            } catch (e: Exception) {
+                System.err.println("Failed to write file $filename ,exception: $e")
+            }
+        }
+    }
+
+    fun write(filename: String, file: String) {
+        val outputStream: FileOutputStream = NativeUtils.resolver.getFileOutputStreamFor(filename)
+        try {
+            outputStream.write(file.toByteArray(charset("UTF-8")))
+            outputStream.close()
+        } catch (e: Exception) {
+            System.err.println("Failed to write file $filename ,exception: $e")
+        }
+    }
+
+    fun writeAsync(filename: String, file: String) {
+        Schedulers.io().createWorker().schedule {
+            val outputStream: FileOutputStream = NativeUtils.resolver.getFileOutputStreamFor(filename)
             try {
                 outputStream.write(file.toByteArray(charset("UTF-8")))
                 outputStream.close()

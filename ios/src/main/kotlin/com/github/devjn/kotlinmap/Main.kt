@@ -8,7 +8,9 @@ import apple.uikit.UIScreen
 import apple.uikit.UIWindow
 import apple.uikit.c.UIKit
 import apple.uikit.protocol.UIApplicationDelegate
+import com.github.devjn.kotlinmap.common.utils.NativeUtils
 import com.github.devjn.kotlinmap.ui.ViewController
+import com.github.devjn.kotlinmap.utils.iOSUtils
 import org.moe.natj.general.Pointer
 import org.moe.natj.general.ann.RegisterOnStartup
 import org.moe.natj.objc.ann.Selector
@@ -52,6 +54,7 @@ class Main protected constructor(peer: Pointer) : NSObject(peer), UIApplicationD
 
         @JvmStatic fun main(args: Array<String>) {
             UIKit.UIApplicationMain(0, null, null, Main::class.java.name)
+            NativeUtils.registerResolver(iOSUtils())
         }
 
         @Selector("alloc")
