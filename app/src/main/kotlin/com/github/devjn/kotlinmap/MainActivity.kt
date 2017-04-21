@@ -165,21 +165,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
-    fun onFabClick(view: View) {
-        onPickButtonClick()
-        if (mGoogleApiClient.isConnected) {
-            if (ContextCompat.checkSelfPermission(this@MainActivity,
-                    Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this@MainActivity,
-                        arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                        PERMISSIONS_REQUEST_CODE)
-            } else {
-                //callPlaceDetectionApi();
-            }
-        } else
-            Log.e(TAG, "mGoogleApiClient is not connected")
-    }
-
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.main, menu)
@@ -194,14 +179,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         if (searchView != null) {
             searchView.setSearchableInfo(searchManager.getSearchableInfo(this@MainActivity.componentName))
             searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-                override fun onQueryTextSubmit(query: String?): Boolean = false
-
-                override fun onQueryTextChange(newText: String?): Boolean {
-                    if(!TextUtils.isEmpty(newText)) {
-                        onMapSearch(newText!!);
+                override fun onQueryTextSubmit(query: String?): Boolean {
+                    if(!TextUtils.isEmpty(query)) {
+                        onMapSearch(query!!);
                     }
                     return true
                 }
+                override fun onQueryTextChange(newText: String?): Boolean = false
             })
         }
         return true
@@ -221,32 +205,24 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         // Handle navigation view item clicks here.
-        val id = item.itemId
-
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_share) {
-            val builder = PlacePicker.IntentBuilder()
-                    .setLatLngBounds(LatLngBounds.Builder()
-                            .include(LatLng(60.1455, 24.9067))
-                            .include(LatLng(60.1782, 24.9530))
-                            .build())
-            try {
-                startActivityForResult(builder.build(this@MainActivity), REQUEST_PLACE_PICKER)
-            } catch (e: GooglePlayServicesRepairableException) {
-                e.printStackTrace()
-            } catch (e: GooglePlayServicesNotAvailableException) {
-                e.printStackTrace()
+        when(item.itemId) {
+//            R.id.nav_camera ->;
+//            R.id.nav_gallery ->;
+            R.id.nav_share -> {
+                val builder = PlacePicker.IntentBuilder().setLatLngBounds(LatLngBounds.Builder()
+                        .include(LatLng(60.1455, 24.9067))
+                        .include(LatLng(60.1782, 24.9530))
+                        .build())
+                try {
+                    startActivityForResult(builder.build(this@MainActivity), REQUEST_PLACE_PICKER)
+                } catch (e: GooglePlayServicesRepairableException) {
+                    Log.e(TAG, "PlacePicker init error: " +e)
+                } catch (e: GooglePlayServicesNotAvailableException) {
+                    Log.e(TAG, "PlacePicker init error: " +e)
+                }
             }
-
-        } else if (id == R.id.nav_send) {
-
-        } else if (id == R.id.action_settings) {
-
+//            R.id.nav_send ->;
+//            R.id.action_settings ->
         }
 
         val drawer = findViewById(R.id.drawer_layout) as DrawerLayout
@@ -272,6 +248,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             locationManager?.removeUpdates(this)
     }
 
+    override fun onResumeFragments() {
+        super.onResumeFragments()
+        if (mPermissionDenied) {
+            // Permission was not granted, display error dialog.
+            showMissingPermissionError()
+            mPermissionDenied = false
+        }
+    }
+
     override fun onLocationChanged(location: Location) {
         this.mLastLocation = location
         val lat = location.latitude.toInt()
@@ -295,6 +280,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         this.provider?.let { locationManager?.requestLocationUpdates(provider, 4000, 10f, this) }
     }
 
+
+    //---- Initializers ----
+
     internal var geoLayer: GeoJsonLayer? = null
 
     override fun onMapReady(map: GoogleMap) {
@@ -309,32 +297,18 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 //            true
 //        }
         map.setOnMapClickListener { bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN }
+        map.getUiSettings().isMapToolbarEnabled = false
+//        map.setPadding(0, 0, 0, UIUtils.dp(72f))
 
         map.addMarker(MarkerOptions()
                 .title("Test")
                 .snippet("Test location.")
                 .position(pos))
 
-        setUpClusterer()
+        setUpCluster()
     }
 
-    fun onMapSearch(query: String) {
-        var addressList: List<Address>? = null
-        val geocoder:Geocoder = Geocoder(this);
-        try {
-            addressList = geocoder.getFromLocationName(query, 1);
-        } catch (e: IOException) {
-            Log.e(TAG, "Cannot get location, exception: "+e)
-        }
-        if(addressList == null) return
-        val address = addressList.get(0);
-        val latLng = LatLng(address.getLatitude(), address.getLongitude());
-        mGoogleMap!!.addMarker(MarkerOptions().position(latLng).title(address.featureName ?: "Search place"));
-        mGoogleMap!!.animateCamera(CameraUpdateFactory.newLatLng(latLng));
-    }
-
-
-    private fun setUpClusterer() {
+    private fun setUpCluster() {
         // Initialize the manager with the context and the map.
         // (Activity extends context, so we can pass 'this' in the constructor.)
         mClusterManager = ClusterManager<PlaceClusterItem>(this, mGoogleMap)
@@ -381,6 +355,123 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
+
+    //----Activity listeners and handlers----
+
+    override fun onConnectionFailed(connectionResult: ConnectionResult) {
+        Log.e(TAG, "Google Places API connection failed with error code: " + connectionResult.errorCode)
+        Toast.makeText(this,
+                "Google Places API connection failed with error code:" + connectionResult.errorCode,
+                Toast.LENGTH_LONG).show()
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>,
+                                            grantResults: IntArray) {
+        when (requestCode) {
+            PERMISSIONS_REQUEST_CODE -> if (grantResults.isNotEmpty()) {
+                onRequestPermissionsResult(LOCATION_PERMISSION_REQUEST_CODE, permissions, grantResults)
+                onRequestPermissionsResult(STORAGE_PERMISSION_REQUEST_CODE, permissions, grantResults)
+            }
+            LOCATION_PERMISSION_REQUEST_CODE -> if (PermissionUtils.isPermissionGranted(permissions, grantResults,
+                    Manifest.permission.ACCESS_FINE_LOCATION)) {
+                // Enable the my location geoLayer if the permission has been granted.
+                mPermissionDenied = false
+                if (locationManager != null) {
+                    if (provider == null) {
+                        val criteria = Criteria()
+                        provider = locationManager!!.getBestProvider(criteria, false)
+                    }
+                    locationManager!!.requestLocationUpdates(provider, 4000, 10f, this)
+                }
+                enableMyLocation()
+            } else {
+                // Display the missing permission error dialog when the fragments resume.
+                Log.w(TAG, "Permissions are not granted: " + permissions)
+                mPermissionDenied = true
+            }
+            STORAGE_PERMISSION_REQUEST_CODE -> if (!PermissionUtils.isPermissionGranted(permissions, grantResults,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE) && ContextCompat.checkSelfPermission(this@MainActivity, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                PermissionUtils.requestPermission(this@MainActivity, 0, Manifest.permission.READ_EXTERNAL_STORAGE, true)
+            }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == REQUEST_PLACE_PICKER && resultCode == Activity.RESULT_OK) {
+            // The user has selected a place. Extract the name and address.
+            val place = PlacePicker.getPlace(this, data)
+
+            val id = place.id
+            val name = place.name
+            val address = place.address
+            val latLng = place.latLng
+            var attributions: String? = place.attributions.toString()
+            if (attributions == null) {
+                attributions = ""
+            }
+            val intent = Intent()
+            intent.putExtra("name", name)
+            intent.putExtra("id", id)
+            intent.putExtra("lat", latLng.latitude)
+            intent.putExtra("lng", latLng.longitude)
+            val list = ArrayList(place.placeTypes)
+            intent.putIntegerArrayListExtra("types", list)
+            startActivity(intent)
+
+            Log.i("Main", "name= " + name + " attributions:\n" + Html.fromHtml(attributions) + "\nList: " + list)
+            val toastMsg = String.format("Place: %s", place.name)
+            Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show()
+
+        } else {
+            super.onActivityResult(requestCode, resultCode, data)
+        }
+    }
+
+    override fun onLocationResult(result: Collection<PlaceClusterItem>?) {
+        Log.i(TAG, "Location result response is received")
+        if (mGoogleMap == null || result == null) return
+        mClusterManager.addItems(result);
+        UIUtils.runOnUIThread(Runnable {
+            mGoogleMap!!.animateCamera(CameraUpdateFactory.newLatLngZoom(mGoogleMap!!.cameraPosition.target, 11f))
+            Toast.makeText(applicationContext, R.string.location_updated, Toast.LENGTH_SHORT).show()
+        })
+    }
+
+
+    //----Click listeners and handlers----
+
+    fun onMapSearch(query: String) {
+        var addressList: List<Address>? = null
+        val geocoder:Geocoder = Geocoder(this);
+        try {
+            addressList = geocoder.getFromLocationName(query, 1);
+        } catch (e: IOException) {
+            Log.e(TAG, "Cannot get location, exception: "+e)
+        }
+        if(addressList == null || addressList.isEmpty())  {
+            Toast.makeText(this, "Nothing found", Toast.LENGTH_SHORT).show()
+            return
+        }
+        val address = addressList.get(0);
+        val latLng = LatLng(address.getLatitude(), address.getLongitude());
+        mGoogleMap!!.addMarker(MarkerOptions().position(latLng).title(address.featureName ?: "Search place"));
+        mGoogleMap!!.animateCamera(CameraUpdateFactory.newLatLng(latLng));
+    }
+
+    fun onFabClick(view: View) {
+        onPickButtonClick()
+        if (mGoogleApiClient.isConnected) {
+            if (ContextCompat.checkSelfPermission(this@MainActivity,
+                    Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this@MainActivity,
+                        arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                        PERMISSIONS_REQUEST_CODE)
+            } else {
+                //callPlaceDetectionApi();
+            }
+        } else
+            Log.e(TAG, "mGoogleApiClient is not connected")
+    }
 
     /**
      * Enables the My Location geoLayer if the fine location permission has been granted.
@@ -432,43 +523,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
     }
 
-    override fun onConnectionFailed(connectionResult: ConnectionResult) {
-        Log.e(TAG, "Google Places API connection failed with error code: " + connectionResult.errorCode)
-        Toast.makeText(this,
-                "Google Places API connection failed with error code:" + connectionResult.errorCode,
-                Toast.LENGTH_LONG).show()
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>,
-                                            grantResults: IntArray) {
-        when (requestCode) {
-            PERMISSIONS_REQUEST_CODE -> if (grantResults.isNotEmpty()) {
-                onRequestPermissionsResult(LOCATION_PERMISSION_REQUEST_CODE, permissions, grantResults)
-                onRequestPermissionsResult(STORAGE_PERMISSION_REQUEST_CODE, permissions, grantResults)
-            }
-            LOCATION_PERMISSION_REQUEST_CODE -> if (PermissionUtils.isPermissionGranted(permissions, grantResults,
-                    Manifest.permission.ACCESS_FINE_LOCATION)) {
-                // Enable the my location geoLayer if the permission has been granted.
-                mPermissionDenied = false
-                if (locationManager != null) {
-                    if (provider == null) {
-                        val criteria = Criteria()
-                        provider = locationManager!!.getBestProvider(criteria, false)
-                    }
-                    locationManager!!.requestLocationUpdates(provider, 4000, 10f, this)
-                }
-                enableMyLocation()
-            } else {
-                // Display the missing permission error dialog when the fragments resume.
-                Log.w(TAG, "Permissions are not granted: " + permissions)
-                mPermissionDenied = true
-            }
-            STORAGE_PERMISSION_REQUEST_CODE -> if (!PermissionUtils.isPermissionGranted(permissions, grantResults,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE) && ContextCompat.checkSelfPermission(this@MainActivity, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                PermissionUtils.requestPermission(this@MainActivity, 0, Manifest.permission.READ_EXTERNAL_STORAGE, true)
-            }
-        }
-    }
 
     @Throws(SecurityException::class)
     private fun callPlaceDetectionApi() {
@@ -488,47 +542,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     fun onPickButtonClick() {
         Log.d(TAG, "onPickButtonClick")
         onSearchClick()
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == REQUEST_PLACE_PICKER && resultCode == Activity.RESULT_OK) {
-            // The user has selected a place. Extract the name and address.
-            val place = PlacePicker.getPlace(this, data)
-
-            val id = place.id
-            val name = place.name
-            val address = place.address
-            val latLng = place.latLng
-            var attributions: String? = place.attributions.toString()
-            if (attributions == null) {
-                attributions = ""
-            }
-            val intent = Intent()
-            intent.putExtra("name", name)
-            intent.putExtra("id", id)
-            intent.putExtra("lat", latLng.latitude)
-            intent.putExtra("lng", latLng.longitude)
-            val list = ArrayList(place.placeTypes)
-            intent.putIntegerArrayListExtra("types", list)
-            startActivity(intent)
-
-            Log.i("Main", "name= " + name + " attributions:\n" + Html.fromHtml(attributions) + "\nList: " + list)
-            val toastMsg = String.format("Place: %s", place.name)
-            Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show()
-
-        } else {
-            super.onActivityResult(requestCode, resultCode, data)
-        }
-    }
-
-    override fun onLocationResult(result: Collection<PlaceClusterItem>?) {
-        Log.i(TAG, "Location result response is received")
-        if (mGoogleMap == null || result == null) return
-        mClusterManager.addItems(result);
-        UIUtils.runOnUIThread(Runnable {
-            mGoogleMap!!.animateCamera(CameraUpdateFactory.newLatLngZoom(mGoogleMap!!.cameraPosition.target, 11f))
-            Toast.makeText(applicationContext, R.string.location_updated, Toast.LENGTH_SHORT).show()
-        })
     }
 
     private fun onSearchClick() {
@@ -561,15 +574,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         showBottomList(lat, lng)
     }
 
-    override fun onResumeFragments() {
-        super.onResumeFragments()
-        if (mPermissionDenied) {
-            // Permission was not granted, display error dialog.
-            showMissingPermissionError()
-            mPermissionDenied = false
-        }
-    }
-
     /**
      * Displays a dialog with error message explaining that the location permission is missing.
      */
@@ -596,7 +600,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         private val GOOGLE_API_CLIENT_ID = 0
         private val PERMISSIONS_REQUEST_CODE = 100
         private val REQUEST_PLACE_PICKER = 202
-
     }
 
 }

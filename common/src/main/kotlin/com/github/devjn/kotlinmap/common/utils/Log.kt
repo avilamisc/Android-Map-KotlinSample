@@ -12,9 +12,11 @@ import org.pmw.tinylog.Logger
  */
 object Log {
 
+    val LOGGING_ENABLED = true
+
     init {
         Configurator.defaultConfig()
-                .level(Level.DEBUG)
+                .level(if (LOGGING_ENABLED) Level.DEBUG else Level.OFF)
                 .activate()
     }
 

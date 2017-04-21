@@ -45,7 +45,7 @@ protected constructor(peer: Pointer) : UIViewController(peer), UISearchControlle
     @Selector("init")
     override external fun init(): ViewController
 
-    val containerView = UIView.alloc().init()
+    val containerView: UIView = UIView.alloc().init()
     internal lateinit var mapView: GMSMapView
     internal lateinit var searchController: UISearchController
 
@@ -127,6 +127,7 @@ protected constructor(peer: Pointer) : UIViewController(peer), UISearchControlle
             val item = POIItem.alloc().initWithPostitionName(CLLocationCoordinate2DMake(lat, lng), name) as POIItem
             clusterManager.addItem(item)
         }
+
     }
 
     /// Returns a random value between -1.0 and 1.0.
@@ -145,10 +146,11 @@ protected constructor(peer: Pointer) : UIViewController(peer), UISearchControlle
     }
 
     fun onMapSearch(address: String) {
+        //Using Apple geocoder as google one does not support placemarks search
         val gc: CLGeocoder = CLGeocoder.alloc().init()
 
         gc.geocodeAddressStringCompletionHandler(address) { placemarks, error ->
-            if(placemarks == null) return@geocodeAddressStringCompletionHandler
+            if(placemarks == null || placemarks.isEmpty()) return@geocodeAddressStringCompletionHandler
             println("Found placemarks: $placemarks, error: $error")
             val place: CLPlacemark = placemarks.get(0)
             val marker = GMSMarker.alloc().init()
