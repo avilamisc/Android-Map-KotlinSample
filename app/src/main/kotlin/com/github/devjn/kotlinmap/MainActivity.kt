@@ -430,15 +430,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onLocationResult(result: Collection<PlaceClusterItem>?) {
         Log.i(TAG, "Location result response is received")
         if (mGoogleMap == null || result == null) return
-        mClusterManager.addItems(result);
         UIUtils.runOnUIThread(Runnable {
+            mClusterManager.addItems(result);
             mGoogleMap!!.animateCamera(CameraUpdateFactory.newLatLngZoom(mGoogleMap!!.cameraPosition.target, 11f))
             Toast.makeText(applicationContext, R.string.location_updated, Toast.LENGTH_SHORT).show()
         })
     }
 
 
-    //----Click listeners and handlers----
+    //---- Click listeners and handlers ----
 
     fun onMapSearch(query: String) {
         var addressList: List<Address>? = null
@@ -459,7 +459,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     fun onFabClick(view: View) {
-        onPickButtonClick()
+        showClosePlaces()
         if (mGoogleApiClient.isConnected) {
             if (ContextCompat.checkSelfPermission(this@MainActivity,
                     Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -539,12 +539,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
-    fun onPickButtonClick() {
-        Log.d(TAG, "onPickButtonClick")
-        onSearchClick()
-    }
-
-    private fun onSearchClick() {
+    private fun showClosePlaces() {
         if (mLastLocation == null) {
             Log.w(TAG, "Last location is null")
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {

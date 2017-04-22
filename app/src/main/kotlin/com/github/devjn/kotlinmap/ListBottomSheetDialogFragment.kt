@@ -19,8 +19,8 @@ import com.github.devjn.kotlinmap.databinding.ListItemCafeBinding
 import com.github.devjn.kotlinmap.utils.SimpleDividerItemDecoration
 import com.github.devjn.kotlinmap.utils.UIUtils
 import com.minimize.android.rxrecycleradapter.RxDataSource
-import rx.Observable
-import rx.subjects.PublishSubject
+import io.reactivex.Observable
+import io.reactivex.subjects.PublishSubject
 import java.util.*
 
 /**
@@ -74,6 +74,7 @@ class ListBottomSheetDialogFragment : BottomSheetDialogFragment() {
         this.lng = lng
         ResponseService.instance.getNearLocations(lat, lng, object : ResponseService.LocationResultListener {
             override fun onLocationResult(result: Collection<PlaceClusterItem>?) {
+                Log.i(TAG, "places result: " + result)
                 this@ListBottomSheetDialogFragment.listPlaces = ArrayList(result)
                 rxDataSource.updateDataSet(listPlaces).updateAdapter()
                 rxDataSource
@@ -91,7 +92,7 @@ class ListBottomSheetDialogFragment : BottomSheetDialogFragment() {
     }
 
     val positionClicks: Observable<PlacePoint>
-        get() = onClickSubject.asObservable()
+        get() = onClickSubject.hide()
 
     fun show(manager: FragmentManager, tag: String?, lat: Double, lng: Double) {
         this.lat = lat

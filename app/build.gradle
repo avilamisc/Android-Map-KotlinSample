@@ -67,10 +67,8 @@ dependencies {
     compile "com.android.support:appcompat-v7:$support_v"
     compile "com.android.support:design:$support_v"
 
-    // Because RxAndroid releases are few and far between, it is recommended you also
-    // explicitly depend on RxJava's latest version for bug fixes and new features.
-    compile 'io.reactivex:rxandroid:1.2.1'
-    compile 'com.minimize.android:rxrecycler-adapter:1.2.2'
+    compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
+    compile 'com.github.devjn:RxRecyclerAdapter:2.0.1'
 
     compile 'com.github.devjn:fesimplegeoprox-android-maps:v1.0'
     compile 'com.google.maps.android:android-maps-utils:0.5'

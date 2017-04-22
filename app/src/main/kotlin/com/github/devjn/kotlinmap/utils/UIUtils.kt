@@ -431,10 +431,9 @@ object UIUtils {
     }
 
     fun getTintedDrawable(drawable: Drawable, color: Int): Drawable {
-        var drawable = drawable
-        drawable = DrawableCompat.wrap(drawable)
-        DrawableCompat.setTint(drawable, color)
-        return drawable
+        val tintedDrawable = DrawableCompat.wrap(drawable)
+        DrawableCompat.setTint(tintedDrawable, color)
+        return tintedDrawable
     }
 
      fun getBitmap(drawable: Drawable): Bitmap? {

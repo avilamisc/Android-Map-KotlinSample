@@ -4,6 +4,8 @@ import android.content.Context
 import com.github.devjn.kotlinmap.Common
 import com.github.devjn.kotlinmap.common.Consts
 import com.github.devjn.kotlinmap.common.utils.NativeUtilsResolver
+import io.reactivex.Scheduler
+import io.reactivex.android.schedulers.AndroidSchedulers
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -26,6 +28,8 @@ class AndroidUtils : NativeUtilsResolver {
         set(value) {
             Common.placesVersion = value
         }
+
+    override fun mainThread(): Scheduler = AndroidSchedulers.mainThread()
 
     override fun openRawResource(filename: String): InputStream = Common.applicationContext.getResources().openRawResource(
             Common.applicationContext.resources.getIdentifier(filename,

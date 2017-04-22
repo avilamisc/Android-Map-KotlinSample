@@ -1,5 +1,6 @@
 package com.github.devjn.kotlinmap.common.utils
 
+import io.reactivex.Scheduler
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.InputStream
@@ -26,6 +27,8 @@ interface NativeUtilsResolver {
     val mapFilePath: String
 
     var placesVersion: Int
+
+    fun mainThread(): Scheduler
 
     fun getFileOutputStreamFor(filename: String): FileOutputStream;
 

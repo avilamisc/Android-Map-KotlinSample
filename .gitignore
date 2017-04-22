@@ -46,3 +46,5 @@ captures/
 /.idea/libraries
 .DS_Store
 /build
+.idea/dictionaries/Jahongir.xml
+.idea/misc.xml

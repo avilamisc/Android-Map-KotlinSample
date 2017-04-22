@@ -8,6 +8,8 @@ import apple.foundation.enums.NSSearchPathDirectory
 import apple.foundation.enums.NSSearchPathDomainMask
 import com.github.devjn.kotlinmap.common.Consts
 import com.github.devjn.kotlinmap.common.utils.NativeUtilsResolver
+import hu.akarnokd.rxjava2.schedulers.BlockingScheduler
+import io.reactivex.Scheduler
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.InputStream
@@ -33,6 +35,7 @@ class iOSUtils : NativeUtilsResolver {
         get() = preferences.integerForKey(Consts.NEAR_VERSION).toInt()
         set(value) = preferences.setIntegerForKey(value.toLong(), Consts.NEAR_VERSION)
 
+    override fun mainThread(): Scheduler = BlockingScheduler()
 
     override fun getFileOutputStreamFor(filename: String): FileOutputStream = FileOutputStream(applicationDocumentsDirectory() + "/" + filename)
 

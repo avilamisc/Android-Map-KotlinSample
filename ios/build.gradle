@@ -54,7 +54,8 @@ dependencies {
     compile project(':common')
 
     // Add Kotlin dependency
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    compile "com.github.akarnokd:rxjava2-extensions:0.16.4"
 }
 
 sourceSets {

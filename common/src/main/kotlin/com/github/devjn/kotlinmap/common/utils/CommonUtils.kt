@@ -1,11 +1,7 @@
 package com.github.devjn.kotlinmap.common.utils
 
-import com.github.devjn.kotlinmap.common.utils.NativeUtils
-import rx.schedulers.Schedulers
-import java.io.BufferedReader
-import java.io.FileOutputStream
-import java.io.InputStream
-import java.io.InputStreamReader
+import io.reactivex.schedulers.Schedulers
+import java.io.*
 
 
 /**
@@ -70,6 +66,22 @@ object CommonUtils {
         bufferedReader.close()
         isr.close()
         inputStream.close()
+        return sb.toString()
+    }
+
+    @Throws(IOException::class)
+    fun read(filename: String): String {
+        val fis = NativeUtils.resolver.openFileInputStreamFor(filename)
+        val isr = InputStreamReader(fis)
+        val bufferedReader = BufferedReader(isr)
+        val sb = StringBuilder()
+
+        bufferedReader.readWhile { it != 1 }.forEach {
+            sb.append(it)
+        }
+        bufferedReader.close()
+        isr.close()
+        fis.close()
         return sb.toString()
     }
 

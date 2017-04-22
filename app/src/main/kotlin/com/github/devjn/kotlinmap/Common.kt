@@ -13,7 +13,7 @@ import android.widget.Toast
 import com.github.devjn.kotlinmap.common.Consts.NEAR_VERSION
 import com.github.devjn.kotlinmap.common.utils.NativeUtils
 import com.github.devjn.kotlinmap.utils.AndroidUtils
-import rx.schedulers.Schedulers
+import io.reactivex.schedulers.Schedulers
 import java.text.SimpleDateFormat
 import java.util.*
 
