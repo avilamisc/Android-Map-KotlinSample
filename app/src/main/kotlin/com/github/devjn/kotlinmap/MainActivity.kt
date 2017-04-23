@@ -36,7 +36,6 @@ import com.github.devjn.kotlinmap.common.PlacePoint
 import com.github.devjn.kotlinmap.common.services.ResponseService
 import com.github.devjn.kotlinmap.databinding.ActivityMainBinding
 import com.github.devjn.kotlinmap.utils.PermissionUtils
-import com.github.devjn.kotlinmap.utils.UIUtils
 import com.github.devjn.kotlinmap.utils.UIUtils.getBitmap
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException
@@ -76,8 +75,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private lateinit var mResponseService: ResponseService
     private var locationManager: LocationManager? = null
     private var provider: String? = null
-    private val testLat = Consts.testLat
-    private val testLng = Consts.testLng
+    private var showPlacesCluster: Boolean = Common.showPlacesCluster
 
     private val mMarkersMap = HashMap<Marker, PlaceClusterItem>(3)
     private lateinit var mClusterManager: ClusterManager<PlaceClusterItem>
@@ -111,9 +109,18 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val navigationView = binding.navView
         navigationView.setNavigationItemSelectedListener(this)
 
-        val mapFragment = supportFragmentManager
-                .findFragmentById(R.id.map) as SupportMapFragment
-        mapFragment.getMapAsync(this)
+
+//        val observable = Observable.fromCallable ( Callable<SupportMapFragment>() {
+//            mapFragment.onCreate(null);
+//            mapFragment.onPause();
+//            mapFragment.onDestroy();
+//            mapFragment;
+//        })
+
+//        observable
+//                .subscribeOn(Schedulers.newThread())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe( { map -> onMapReady(map) });
 
         mGoogleApiClient = GoogleApiClient.Builder(this)
                 .addApi(Places.PLACE_DETECTION_API)
@@ -121,6 +128,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 .build()
 
         initLocationServices()
+
+        val mapFragment = supportFragmentManager
+                .findFragmentById(R.id.map) as SupportMapFragment
+        mapFragment.getMapAsync(this)
     }
 
     private fun initLocationServices() {
@@ -129,7 +140,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         // Get the location manager
         locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        // Define the criteria how to select the locatioin provider -> use default
+        // Define the criteria how to select the location provider -> use default
         val criteria = Criteria()
         provider = locationManager!!.getBestProvider(criteria, true)
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
@@ -168,6 +179,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.main, menu)
+        val showItem = menu.findItem(R.id.action_show_all_places)
+        showItem.setChecked(showPlacesCluster)
+
         val searchItem = menu.findItem(R.id.action_search)
 
         val searchManager = this@MainActivity.getSystemService(Context.SEARCH_SERVICE) as SearchManager
@@ -197,7 +211,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         // as you specify a parent activity in AndroidManifest.xml.
         val id = item.itemId
 
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_show_all_places) {
+            item.setChecked(!item.isChecked);
+            val show = item.isChecked
+            Common.showPlacesCluster = show
+            showPlacesCluster = show
+            return true
+        } else if (id == R.id.action_settings) {
             return true
         }
         return super.onOptionsItemSelected(item)
@@ -287,9 +307,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onMapReady(map: GoogleMap) {
         this.mGoogleMap = map
-        val pos = LatLng(testLat, testLng)
+        val pos = LatLng(Consts.testLat, Consts.testLng)
 
-        enableMyLocation()
+//        enableMyLocation()
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(pos, Consts.defaultZoom))
 
 //        map.setOnMarkerClickListener { marker ->
@@ -297,7 +317,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 //            true
 //        }
         map.setOnMapClickListener { bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN }
-        map.getUiSettings().isMapToolbarEnabled = false
+        map.uiSettings.isMapToolbarEnabled = false
 //        map.setPadding(0, 0, 0, UIUtils.dp(72f))
 
         map.addMarker(MarkerOptions()
@@ -430,7 +450,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onLocationResult(result: Collection<PlaceClusterItem>?) {
         Log.i(TAG, "Location result response is received")
         if (mGoogleMap == null || result == null) return
-        UIUtils.runOnUIThread(Runnable {
+        if(showPlacesCluster)
+        runOnUiThread(Runnable {
             mClusterManager.addItems(result);
             mGoogleMap!!.animateCamera(CameraUpdateFactory.newLatLngZoom(mGoogleMap!!.cameraPosition.target, 11f))
             Toast.makeText(applicationContext, R.string.location_updated, Toast.LENGTH_SHORT).show()
@@ -561,11 +582,20 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             lat = mLastLocation!!.latitude
             lng = mLastLocation!!.longitude
         } ?: run {
-            lat = testLat
-            lng = testLng
+            lat = Consts.testLat
+            lng = Consts.testLng
         }
         Log.i(TAG, "Search click, lat= $lat, lng= $lng")
-        mGoogleMap?.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(testLat, testLng), 14f))
+        if(!showPlacesCluster)
+            mResponseService.getNearLocations(lat, lng, object: ResponseService.LocationResultListener {
+                override fun onLocationResult(result: Collection<PlaceClusterItem>?) {
+                    runOnUiThread {
+                        mClusterManager.addItems(result)
+                        mGoogleMap?.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(Consts.testLat, Consts.testLng), 14f))
+                    }
+                }
+            })
+        else mGoogleMap?.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(Consts.testLat, Consts.testLng), 14f))
         showBottomList(lat, lng)
     }
 

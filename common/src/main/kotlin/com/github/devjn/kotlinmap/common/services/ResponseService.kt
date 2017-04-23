@@ -13,11 +13,12 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.reflect.TypeToken
 import com.javadocmd.simplelatlng.util.LengthUnit
+import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 import org.ferriludium.simplegeoprox.FeSimpleGeoProx
 import org.pmw.tinylog.Logger
 import java.io.File
-import java.io.IOException
+import java.util.*
 
 
 /**
@@ -82,36 +83,20 @@ class ResponseService {
                         NativeUtils.resolver.placesVersion = mapAll.version
                         mPlacesVersion = mapAll.version
                     }
-                }, { t -> Log.e(TAG, "getAllCallback response failed: " + t) })
+                }, { t -> Log.e(TAG, "requestNewVersion response failed: " + t) })
     }
 
     private fun checkLocal() {
-        Schedulers.io().createWorker().schedule( {
-            val file = File(NativeUtils.resolver.mapFilePath)
-            if (file.exists()) {
-                try {
-                    val gson = Gson()
-                    val jsonFile = CommonUtils.read(Consts.MAP_FILENAME)
-                    val listType = object : TypeToken<List<PlaceClusterItem>>() {}.type
-                    mapObjects = gson.fromJson<List<PlaceClusterItem>>(jsonFile, listType) as List<PlaceClusterItem>
+        val file = File(NativeUtils.resolver.mapFilePath)
+        getPlacesObservable(file.exists()).observeOn(Schedulers.io())
+                .filter { File(NativeUtils.resolver.mapFilePath).exists() }
+                .subscribeOn(NativeUtils.resolver.mainThread())
+                .subscribe({ list ->
+                    mapObjects = list
                     world = FeSimpleGeoProx(mapObjects)
                     mListener?.onLocationResult(mapObjects)
                     Log.i(TAG, "world created, size= " + mapObjects.size)
-                    return@schedule
-                } catch (e: IOException) {
-                    Log.e(TAG, "Read exception: " + e)
-                } catch (e: ClassCastException) {
-                    Log.wtf(TAG, "mapObjects is not of needed type, exception: " + e)
-                }
-            } else {
-                Log.e(TAG, "Map file doesn't exist")
-                mapObjects = GeoJsonConverter.ConvertLocalJson()
-                world = FeSimpleGeoProx(mapObjects)
-                mListener?.onLocationResult(mapObjects)
-                Log.i(TAG, "world created, size= " + mapObjects.size)
-            }
-            requestNewVersion()
-        })
+                })
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -149,6 +134,15 @@ class ResponseService {
         private val TAG = ResponseService::class.java.simpleName
 
         val instance: ResponseService by lazy { Holder.INSTANCE }
+
+        fun getPlacesObservable (exist: Boolean): Observable<List<PlaceClusterItem>> = Observable.fromCallable  {
+            if(exist) {
+                val gson = Gson()
+                val jsonFile = CommonUtils.read(Consts.MAP_FILENAME)
+                val listType = object : TypeToken<List<PlaceClusterItem>>() {}.type
+                gson.fromJson<List<PlaceClusterItem>>(jsonFile, listType)
+            } else GeoJsonConverter.ConvertLocalJson()
+        }
     }
 
 }

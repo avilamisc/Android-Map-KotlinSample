@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-        <variable name="activity" type="com.github.devjn.kotlinmap.MainActivity"/>
+
+        <variable
+            name="activity"
+            type="com.github.devjn.kotlinmap.MainActivity"/>
     </data>
 
     <android.support.design.widget.CoordinatorLayout
@@ -22,15 +25,20 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="?attr/colorPrimary"
-                app:popupTheme="@style/AppTheme.PopupOverlay" />
+                app:popupTheme="@style/AppTheme.PopupOverlay"/>
 
         </android.support.design.widget.AppBarLayout>
 
-        <include layout="@layout/content_main"
-                 android:id="@+id/content_main"/>
+        <fragment
+            android:id="@+id/map"
+            class="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="?attr/actionBarSize"
+            tools:layout="@android:layout/simple_gallery_item"/>
 
         <include layout="@layout/content_bottom_sheet_main"
-                 android:id="@+id/bottom_sheet"/>
+            android:id="@+id/bottom_sheet"/>
 
         <LinearLayout
             android:id="@+id/primary_wrap"

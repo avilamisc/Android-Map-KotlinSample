@@ -83,6 +83,12 @@ class Common : Application() {
                 prefs.edit().putString("PROFILE_DIRECTORY", directory).commit()
             }
 
+        var showPlacesCluster: Boolean
+            get() = prefs.getBoolean("ShowPlacesCluster", true)
+            set(show) {
+                prefs.edit().putBoolean("ShowPlacesCluster", show).apply()
+            }
+
         val newTestContactId: Int
             get() = prefs.getInt("testid", 10000) + 1
 

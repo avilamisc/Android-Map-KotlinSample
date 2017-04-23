@@ -19,4 +19,5 @@
     <string name="add_image">Add image</string>
     <string name="select_take_picture">Сделайте или выберети фото</string>
     <string name="location_not_define">Местоположение не определено</string>
+    <string name="action_show_all_places">Show all places</string>
 </resources>

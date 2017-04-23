@@ -411,7 +411,7 @@ object UIUtils {
         }
     }
 
-    @JvmOverloads fun runOnUIThread(runnable: Runnable, delay: Long = 0) {
+    @JvmOverloads fun runOnUiThread(runnable: Runnable, delay: Long = 0) {
         if (delay == 0L) {
             Common.applicationHandler.post(runnable)
         } else {
