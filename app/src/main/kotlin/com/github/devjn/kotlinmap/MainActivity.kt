@@ -450,12 +450,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onLocationResult(result: Collection<PlaceClusterItem>?) {
         Log.i(TAG, "Location result response is received")
         if (mGoogleMap == null || result == null) return
-        if(showPlacesCluster)
-        runOnUiThread(Runnable {
+        if(showPlacesCluster) {
             mClusterManager.addItems(result);
             mGoogleMap!!.animateCamera(CameraUpdateFactory.newLatLngZoom(mGoogleMap!!.cameraPosition.target, 11f))
             Toast.makeText(applicationContext, R.string.location_updated, Toast.LENGTH_SHORT).show()
-        })
+        }
     }
 
 
@@ -498,7 +497,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
      * Enables the My Location geoLayer if the fine location permission has been granted.
      */
     private fun enableMyLocation() {
-        if (PermissionUtils.isLocationGranted) {
+        if (!PermissionUtils.isLocationGranted) {
             // Permission to access the location is missing.
             PermissionUtils.requestPermission(this, LOCATION_PERMISSION_REQUEST_CODE,
                     Manifest.permission.ACCESS_FINE_LOCATION, true)

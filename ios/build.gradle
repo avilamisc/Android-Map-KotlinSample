@@ -55,7 +55,7 @@ dependencies {
 
     // Add Kotlin dependency
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
-    compile "com.github.akarnokd:rxjava2-extensions:0.16.4"
+    compile 'com.github.devjn:RxiOSMOE:2.0.1'
 }
 
 sourceSets {

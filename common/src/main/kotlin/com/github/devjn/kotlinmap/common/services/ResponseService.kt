@@ -88,9 +88,9 @@ class ResponseService {
 
     private fun checkLocal() {
         val file = File(NativeUtils.resolver.mapFilePath)
-        getPlacesObservable(file.exists()).observeOn(Schedulers.io())
+        getPlacesObservable(file.exists()).subscribeOn(Schedulers.io())
                 .filter { File(NativeUtils.resolver.mapFilePath).exists() }
-                .subscribeOn(NativeUtils.resolver.mainThread())
+                .observeOn(NativeUtils.resolver.mainThread())
                 .subscribe({ list ->
                     mapObjects = list
                     world = FeSimpleGeoProx(mapObjects)
